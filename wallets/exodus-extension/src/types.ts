@@ -1,3 +1,5 @@
+import type { AccountData } from '@cosmjs/proto-signing';
+
 type Chain = string;
 
 export interface Account {
@@ -16,7 +18,7 @@ interface Transaction {
 }
 
 export interface ExodusCosmosProvider {
-  connect: (options: ConnectionOptions) => Promise<Account>;
+  connect: (options: ConnectionOptions) => Promise<AccountData>;
   signTransaction: (transaction: Transaction) => Promise<{ signature: string }>;
 }
 
