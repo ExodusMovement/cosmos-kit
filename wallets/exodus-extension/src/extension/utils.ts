@@ -9,7 +9,7 @@ export const getExodusFromExtension: () => Promise<
     return void 0;
   }
 
-  const exodus = ((window as unknown) as ExodusWindow).exodus;
+  const exodus = (window as unknown as ExodusWindow).exodus;
 
   if (exodus) {
     return exodus;
