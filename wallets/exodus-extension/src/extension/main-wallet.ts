@@ -15,7 +15,7 @@ export class ExodusExtensionWallet extends MainWalletBase {
     this.initingClient();
     try {
       const exodus = await getExodusFromExtension();
-      if (exodus?.cosmos) {
+      if (!exodus?.cosmos) {
         throw new Error('Exodus client does not support Cosmos provider');
       }
       this.initClientDone(exodus ? new ExodusClient(exodus.cosmos) : undefined);
