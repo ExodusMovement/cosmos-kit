@@ -19,7 +19,8 @@ export const exodusExtensionInfo: Wallet = {
       device: 'desktop',
       browser: 'chrome',
       icon: RiChromeFill,
-      link: 'https://chrome.google.com/webstore/detail/exodus-web3-wallet/aholpfdialjgjfhomihkjbmgjidlcdno',
+      link:
+        'https://chrome.google.com/webstore/detail/exodus-web3-wallet/aholpfdialjgjfhomihkjbmgjidlcdno',
     },
     {
       icon: GoDesktopDownload,

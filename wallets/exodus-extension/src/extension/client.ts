@@ -1,9 +1,10 @@
 import { BroadcastMode, DirectSignDoc, WalletClient } from '@cosmos-kit/core';
-import type { 
+
+import type {
   AccountData,
   DirectSignResponse,
   ExodusCosmosProvider,
-  StdSignDoc
+  StdSignDoc,
 } from '../types';
 
 export class ExodusClient implements WalletClient {
@@ -15,22 +16,24 @@ export class ExodusClient implements WalletClient {
   }
 
   async connect(chainId: string | string[]) {
-    await this.client.connect({ chainId: Array.isArray(chainId) ? chainId[0] : chainId });
+    await this.client.connect({
+      chainId: Array.isArray(chainId) ? chainId[0] : chainId,
+    });
   }
 
   async getAccount(chainId: string) {
-    const account = await this.client.connect({ chainId });
+    const response = await this.client.connect({ chainId });
 
-    this.account = account;
+    this.account = {
+      ...response,
+      pubkey: response.publicKey,
+    };
 
-    return {
-      ...account,
-      pubkey: account.publicKey,
-    }
+    return this.account;
   }
 
   async getOfflineSigner(chainId: string) {
-    await this.getAccount(chainId)
+    await this.getAccount(chainId);
 
     return {
       getAccounts: async (): Promise<AccountData[]> => [this.account],
@@ -48,6 +51,6 @@ export class ExodusClient implements WalletClient {
   }
 
   async sendTx(chainId: string, transaction: Uint8Array, mode: BroadcastMode) {
-    return this.client.sendTx(chainId, transaction, mode)
+    return this.client.sendTx(chainId, transaction, mode);
   }
 }
