@@ -1,49 +1,53 @@
-import type { AccountData } from '@cosmjs/proto-signing';
-import type { DirectSignResponse } from '@cosmjs/proto-signing/build/signer';
-import { WalletClient } from '@cosmos-kit/core';
-import type { SignDoc } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { BroadcastMode, DirectSignDoc, WalletClient } from '@cosmos-kit/core';
 
-import type { ExodusCosmosProvider } from '../types';
+import type {
+  AccountData,
+  DirectSignResponse,
+  ExodusCosmosProvider,
+  StdSignDoc,
+} from '../types';
 
 export class ExodusClient implements WalletClient {
   readonly client: ExodusCosmosProvider;
-  private account!: AccountData;
 
   constructor(client: ExodusCosmosProvider) {
     this.client = client;
   }
 
-  async getAccount(chainId: string) {
-    const account = await this.client.connect({ chainId });
-
-    this.account = account;
-
-    return account;
+  async connect(chainId: string | string[]) {
+    await this.client.connect({
+      chainId: Array.isArray(chainId) ? chainId[0] : chainId,
+    });
   }
 
-  async getOfflineSigner() {
+  async getAccount(chainId: string) {
+    const response = await this.client.connect({ chainId });
+
     return {
-      getAccounts: async (): Promise<AccountData[]> => [this.account],
+      ...response,
+      pubkey: response.publicKey,
+    };
+  }
+
+  async getOfflineSigner(chainId: string) {
+    return {
+      getAccounts: async (): Promise<AccountData[]> => [
+        await this.getAccount(chainId),
+      ],
       signDirect: async (
         signer: string,
-        signDoc: SignDoc
+        signDoc: DirectSignDoc
       ): Promise<DirectSignResponse> => {
-        const { signature } = await this.client.signTransaction({
-          signer,
-          ...signDoc,
-        });
-
-        return {
-          signed: signDoc,
-          signature: {
-            pub_key: {
-              type: this.account.algo,
-              value: this.account.pubkey,
-            },
-            signature,
-          },
-        };
+        return this.client.signTransaction(signDoc);
       },
     };
+  }
+
+  async signAmino(chainId: string, signer: string, signDoc: StdSignDoc) {
+    return this.client.signAminoTransaction(signDoc);
+  }
+
+  async sendTx(chainId: string, transaction: Uint8Array, mode: BroadcastMode) {
+    return this.client.sendTx(chainId, transaction, mode);
   }
 }

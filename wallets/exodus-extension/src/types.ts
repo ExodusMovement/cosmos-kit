@@ -1,25 +1,26 @@
-import type { AccountData } from '@cosmjs/proto-signing';
+import type { AminoSignResponse, StdSignDoc } from '@cosmjs/amino';
+import type { AccountData, DirectSignResponse } from '@cosmjs/proto-signing';
+import type { BroadcastMode, DirectSignDoc } from '@cosmos-kit/core';
 
 type Chain = string;
-
-export interface Account {
-  address: string;
-}
 
 interface ConnectionOptions {
   chainId: Chain;
 }
 
-interface Transaction {
-  authInfo?: Uint8Array;
-  body?: Uint8Array;
-  chainId: Chain;
-  signer: string;
-}
+type Account = AccountData & { publicKey: Uint8Array };
 
 export interface ExodusCosmosProvider {
-  connect: (options: ConnectionOptions) => Promise<AccountData>;
-  signTransaction: (transaction: Transaction) => Promise<{ signature: string }>;
+  connect: (options: ConnectionOptions) => Promise<Account>;
+  signTransaction: (transaction: DirectSignDoc) => Promise<DirectSignResponse>;
+  signAminoTransaction: (
+    aminoTransaction: StdSignDoc
+  ) => Promise<AminoSignResponse>;
+  sendTx: (
+    chainId: string,
+    rawTx: Uint8Array,
+    mode: BroadcastMode
+  ) => Promise<Uint8Array>;
 }
 
 export interface Exodus {
@@ -29,3 +30,11 @@ export interface Exodus {
 export interface ExodusWindow {
   exodus: Exodus;
 }
+
+export type {
+  AccountData,
+  BroadcastMode,
+  DirectSignDoc,
+  DirectSignResponse,
+  StdSignDoc,
+};
