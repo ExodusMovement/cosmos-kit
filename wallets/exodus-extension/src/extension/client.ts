@@ -9,7 +9,6 @@ import type {
 
 export class ExodusClient implements WalletClient {
   readonly client: ExodusCosmosProvider;
-  private account!: AccountData;
 
   constructor(client: ExodusCosmosProvider) {
     this.client = client;
@@ -24,19 +23,17 @@ export class ExodusClient implements WalletClient {
   async getAccount(chainId: string) {
     const response = await this.client.connect({ chainId });
 
-    this.account = {
+    return {
       ...response,
       pubkey: response.publicKey,
     };
-
-    return this.account;
   }
 
   async getOfflineSigner(chainId: string) {
-    await this.getAccount(chainId);
-
     return {
-      getAccounts: async (): Promise<AccountData[]> => [this.account],
+      getAccounts: async (): Promise<AccountData[]> => [
+        await this.getAccount(chainId),
+      ],
       signDirect: async (
         signer: string,
         signDoc: DirectSignDoc
