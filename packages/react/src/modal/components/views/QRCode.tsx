@@ -43,14 +43,14 @@ export const QRCodeView = ({ onClose, onReturn, wallet }: WalletViewProps) => {
         }
         break;
       default:
-        throw new Error(`No corresponding QRCodeStatus for State ${state}.`);
+        status = QRCodeStatus.Error;
     }
 
     return [desc, errorTitle, errorDesc, status];
   }, [state, message]);
 
   const onRefresh = useCallback(() => {
-    wallet.connect(void 0, void 0, false);
+    wallet.connect(false);
   }, [wallet]);
 
   const modalHead = (

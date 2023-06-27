@@ -1,17 +1,10 @@
-# How to Add Keplr wallet to CosmosKit
+# How to Add Keplr Wallet to CosmosKit
 
 There are three packages for keplr
 
 - `@cosmoskit/keplr`
 - `@cosmoskit/keplr-extension`
 - `@cosmoskit/keplr-mobile`
-
-> Attention! Keplr Wallet app only support wallet connect v1 currently. If you want to use `keplr-mobile`, make sure your dependencies versions no higher than below if they are imported.
-> 
->  -  "@cosmos-kit/core": "1.0.3",
->  -  "@cosmos-kit/keplr": "0.32.21",
->  -  "@cosmos-kit/keplr-mobile": "0.32.21",
->  -  "@cosmos-kit/react": "1.0.4",
 
 `@cosmoskit/keplr` export all available keplr wallets, while if you only want to add a particular one, choose `@cosmoskit/keplr-extension` or `@cosmoskit/keplr-mobile`
 
@@ -28,7 +21,7 @@ yarn add @cosmoskit/keplr
 ## import the wallets
 
 ```js
-import { wallets as keplrWallets } from '@cosmos-kit/keplr';
+import { wallets as keplr } from '@cosmos-kit/keplr';
 ```
 
 ## add to your provider
@@ -37,13 +30,15 @@ import { wallets as keplrWallets } from '@cosmos-kit/keplr';
 function MyCosmosApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={defaultTheme}>
-      <WalletProvider
+      <ChainProvider
         chains={chains}
         assetLists={assets}
-        wallets={[...keplrWallets]}
+        wallets={[...keplr]}
+        wrappedWithChakra={true}
+        walletConnectOptions={...} // required if `wallets` contains mobile wallets
       >
         <Component {...pageProps} />
-      </WalletProvider>
+      </ChainProvider>
     </ChakraProvider>
   );
 }

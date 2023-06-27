@@ -1,18 +1,21 @@
-import { Callbacks, ChainName, ChainRecord, EndpointOptions, IChainWallet, SessionOptions, Wallet } from '../types';
+import { ChainName, ChainRecord, EndpointOptions, IChainWallet, Wallet, WalletClient, WalletStatus } from '../types';
 import { ChainWalletBase } from './chain-wallet';
 import { WalletBase } from './wallet';
 export declare abstract class MainWalletBase extends WalletBase {
-    protected _chainWallets?: Map<ChainName, ChainWalletBase>;
-    preferredEndpoints?: EndpointOptions;
+    protected _chainWalletMap?: Map<ChainName, ChainWalletBase>;
+    preferredEndpoints?: EndpointOptions['endpoints'];
     ChainWallet: IChainWallet;
     constructor(walletInfo: Wallet, ChainWallet: IChainWallet);
+    initingClient(): void;
+    initClientDone(client: WalletClient | undefined): void;
+    initClientError(error: Error | undefined): void;
     protected onSetChainsDone(): void;
     setChains(chains: ChainRecord[], overwrite?: boolean): void;
-    get username(): string | undefined;
-    get chainWallets(): Map<string, ChainWalletBase>;
+    get chainWalletMap(): Map<string, ChainWalletBase>;
     getChainWallet: (chainName: string) => ChainWalletBase | undefined;
-    update(sessionOptions?: SessionOptions, callbacks?: Callbacks): Promise<void>;
-    reset(): void;
-    connectActive(exclude?: ChainName): Promise<void>;
-    disconnectActive(exclude?: ChainName): void;
+    getChainWalletList: (activeOnly?: boolean) => ChainWalletBase[];
+    getGlobalStatusAndMessage: (activeOnly?: boolean) => [WalletStatus, string | undefined];
+    update(): Promise<void>;
+    connectAll(activeOnly?: boolean, exclude?: ChainName): Promise<void>;
+    disconnectAll(activeOnly?: boolean, exclude?: ChainName): Promise<void>;
 }

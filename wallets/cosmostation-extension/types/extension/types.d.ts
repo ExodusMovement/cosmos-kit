@@ -1,3 +1,4 @@
+import { Algo } from '@cosmjs/proto-signing';
 import { Keplr } from '@keplr-wallet/types';
 export interface CosmostationSignOptions {
     readonly preferNoSetFee?: boolean;
@@ -24,4 +25,5 @@ export declare type RequestAccountResponse = {
     address: string;
     publicKey: Uint8Array;
     isLedger: boolean;
+    algo: Algo;
 };

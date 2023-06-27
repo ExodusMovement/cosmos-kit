@@ -1,11 +1,12 @@
-# How to Add Leap wallet to CosmosKit
+# How to Add Leap Wallet to CosmosKit
 
-There are two packages for leap
+There are three packages for leap
 
 - `@cosmoskit/leap`
 - `@cosmoskit/leap-extension`
+- `@cosmoskit/leap-mobile`
 
-`@cosmoskit/leap` export all available leap wallets (currently only extension available), while if you only want to add a particular one, choose `@cosmoskit/leap-extension`
+`@cosmoskit/leap` export all available leap wallets, while if you only want to add a particular one, choose `@cosmoskit/leap-extension` or `@cosmoskit/leap-mobile`
 
 > Note: all these packages export `wallets` and it's an array of `MainWalletBase`
 
@@ -20,7 +21,7 @@ yarn add @cosmoskit/leap
 ## import the wallets
 
 ```js
-import { wallets as leapwallets } from "@cosmos-kit/leap";
+import { wallets as leap } from "@cosmos-kit/leap";
 ```
 
 ## add to your provider
@@ -29,13 +30,15 @@ import { wallets as leapwallets } from "@cosmos-kit/leap";
 function MyCosmosApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={defaultTheme}>
-      <WalletProvider
+      <ChainProvider
         chains={chains}
         assetLists={assets}
-        wallets={[...leapwallets]}
+        wallets={[...leap]}
+        wrappedWithChakra={true}
+        walletConnectOptions={...} // required if `wallets` contains mobile wallets
       >
         <Component {...pageProps} />
-      </WalletProvider>
+      </ChainProvider>
     </ChakraProvider>
   );
 }

@@ -1,10 +1,4 @@
-import {
-  Mutable,
-  State,
-  Wallet,
-  WalletClient,
-  WalletConnectOptions,
-} from '@cosmos-kit/core';
+import { Mutable, State, Wallet, WalletConnectOptions } from '@cosmos-kit/core';
 import { MainWalletBase } from '@cosmos-kit/core';
 import { WCClient } from './client';
 
@@ -22,27 +16,32 @@ export class WCWallet extends MainWalletBase {
     }
     super(walletInfo, ChainWC);
     this.WCClient = WCClient;
-    this.initClient();
   }
 
   async initClient(options?: WalletConnectOptions) {
+    if (!options) {
+      this.initClientError(
+        new Error('`walletconnectOptions` is not provided.')
+      );
+      return;
+    }
+
+    if (!options.signClient.projectId) {
+      this.initClientError(
+        new Error('`projectId` is not provided in `walletconnectOptions`.')
+      );
+      return;
+    }
+
     this.initingClient();
 
     try {
-      let client: WCClient;
-      if (this.client) {
-        client = this.client as WCClient;
-      } else {
-        client = new this.WCClient(this.walletInfo);
-        client.emitter = this.emitter;
-      }
-
+      const client = new this.WCClient(this.walletInfo);
       client.logger = this.logger;
-
-      if (options) {
-        client.options = options;
-        await client.initSignClient();
-      }
+      client.emitter = this.emitter;
+      client.env = this.env;
+      client.options = options;
+      await client.init();
 
       this.initClientDone(client);
     } catch (error) {

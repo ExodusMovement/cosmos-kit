@@ -3,6 +3,329 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.36](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.35...@cosmos-kit/keplr-mobile@0.33.36) (2023-06-08)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.35](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.34...@cosmos-kit/keplr-mobile@0.33.35) (2023-06-08)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.34](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.33...@cosmos-kit/keplr-mobile@0.33.34) (2023-06-05)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.33](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.32...@cosmos-kit/keplr-mobile@0.33.33) (2023-06-02)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.32](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.31...@cosmos-kit/keplr-mobile@0.33.32) (2023-06-01)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.31](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.30...@cosmos-kit/keplr-mobile@0.33.31) (2023-05-30)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.30](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.29...@cosmos-kit/keplr-mobile@0.33.30) (2023-05-23)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.29](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.28...@cosmos-kit/keplr-mobile@0.33.29) (2023-05-17)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.28](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.27...@cosmos-kit/keplr-mobile@0.33.28) (2023-05-16)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.27](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.26...@cosmos-kit/keplr-mobile@0.33.27) (2023-05-15)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.26](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.25...@cosmos-kit/keplr-mobile@0.33.26) (2023-05-04)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.25](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.24...@cosmos-kit/keplr-mobile@0.33.25) (2023-04-28)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.24](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.23...@cosmos-kit/keplr-mobile@0.33.24) (2023-04-25)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.23](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.22...@cosmos-kit/keplr-mobile@0.33.23) (2023-04-24)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.22](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.21...@cosmos-kit/keplr-mobile@0.33.22) (2023-04-24)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.21](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.20...@cosmos-kit/keplr-mobile@0.33.21) (2023-04-23)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.20](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.19...@cosmos-kit/keplr-mobile@0.33.20) (2023-04-20)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.19](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.18...@cosmos-kit/keplr-mobile@0.33.19) (2023-04-20)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.18](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.17...@cosmos-kit/keplr-mobile@0.33.18) (2023-04-14)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.17](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.16...@cosmos-kit/keplr-mobile@0.33.17) (2023-04-13)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.16](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.15...@cosmos-kit/keplr-mobile@0.33.16) (2023-04-07)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.15](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.14...@cosmos-kit/keplr-mobile@0.33.15) (2023-03-31)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.14](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.13...@cosmos-kit/keplr-mobile@0.33.14) (2023-03-27)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.13](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.12...@cosmos-kit/keplr-mobile@0.33.13) (2023-03-17)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.12](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.11...@cosmos-kit/keplr-mobile@0.33.12) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.11](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.10...@cosmos-kit/keplr-mobile@0.33.11) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.10](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.9...@cosmos-kit/keplr-mobile@0.33.10) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.9](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.8...@cosmos-kit/keplr-mobile@0.33.9) (2023-03-14)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.8](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.7...@cosmos-kit/keplr-mobile@0.33.8) (2023-03-14)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.7](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.6...@cosmos-kit/keplr-mobile@0.33.7) (2023-03-13)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.6](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.5...@cosmos-kit/keplr-mobile@0.33.6) (2023-03-09)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.5](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.4...@cosmos-kit/keplr-mobile@0.33.5) (2023-03-07)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.4](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.3...@cosmos-kit/keplr-mobile@0.33.4) (2023-03-03)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.3](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.2...@cosmos-kit/keplr-mobile@0.33.3) (2023-02-28)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.2](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.1...@cosmos-kit/keplr-mobile@0.33.2) (2023-02-28)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.33.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.33.0...@cosmos-kit/keplr-mobile@0.33.1) (2023-02-27)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+# [0.33.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.32.33...@cosmos-kit/keplr-mobile@0.33.0) (2023-02-27)
+
+
+### Features
+
+* leap account change and debug ([9006aac](https://github.com/cosmology-tech/cosmos-kit/commit/9006aac6c453262e9ac890c34616622b50dc5766))
+
+
+
+
+
+## [0.32.33](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.32.32...@cosmos-kit/keplr-mobile@0.32.33) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.32.32](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.32.31...@cosmos-kit/keplr-mobile@0.32.32) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
+## [0.32.31](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.32.30...@cosmos-kit/keplr-mobile@0.32.31) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/keplr-mobile
+
+
+
+
+
 ## [0.32.30](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/keplr-mobile@0.32.29...@cosmos-kit/keplr-mobile@0.32.30) (2023-02-23)
 
 **Note:** Version bump only for package @cosmos-kit/keplr-mobile

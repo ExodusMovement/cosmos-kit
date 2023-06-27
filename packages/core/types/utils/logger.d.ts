@@ -1,10 +1,9 @@
-import { Logger as TsLogger } from 'ts-log';
 import { LogLevel } from '../types';
-export declare class Logger implements TsLogger {
+export declare class Logger {
     private readonly logger;
     readonly level: LogLevel;
     readonly levelOrder: LogLevel[];
-    constructor(logger?: TsLogger, level?: LogLevel);
+    constructor(level?: LogLevel);
     private compare;
     trace(message?: any, ...optionalParams: any[]): void;
     debug(message?: any, ...optionalParams: any[]): void;

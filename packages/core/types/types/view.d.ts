@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+/// <reference types="react" />
 import { ChainWalletBase } from '../bases';
 import { WalletRepo } from '../repository';
 import { Dispatch } from './common';
@@ -20,6 +20,9 @@ export interface WalletViewProps {
     onClose: () => void;
     onReturn: () => void;
     wallet: ChainWalletBase;
+}
+interface RefObject<T> {
+    readonly current: T | null;
 }
 export interface WalletListViewProps {
     onClose: () => void;

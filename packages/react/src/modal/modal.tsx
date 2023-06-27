@@ -15,7 +15,7 @@ import React, {
   useState,
   useRef,
 } from 'react';
-import { WrapperWithProvidedTheme } from './components';
+import { ChakraProviderWithGivenTheme } from './components';
 import { defaultModalViews } from './components/views';
 
 export const DefaultModal = ({
@@ -24,14 +24,14 @@ export const DefaultModal = ({
   walletRepo,
 }: WalletModalProps) => {
   return (
-    <WrapperWithProvidedTheme>
+    <ChakraProviderWithGivenTheme>
       <WalletModal
         isOpen={isOpen}
         setOpen={setOpen}
         walletRepo={walletRepo}
         modalViews={defaultModalViews}
       />
-    </WrapperWithProvidedTheme>
+    </ChakraProviderWithGivenTheme>
   );
 };
 
@@ -40,7 +40,11 @@ export const WalletModal = ({
   setOpen,
   walletRepo,
   modalViews,
-}: WalletModalProps & { modalViews: ModalViews }) => {
+  includeAllWalletsOnMobile,
+}: WalletModalProps & {
+  modalViews: ModalViews;
+  includeAllWalletsOnMobile?: boolean;
+}) => {
   const initialFocus = useRef();
   const [currentView, setCurrentView] = useState<ModalView>(
     ModalView.WalletList
@@ -56,6 +60,7 @@ export const WalletModal = ({
     },
   });
   const walletStatus = current?.walletStatus;
+  const message = current?.message;
 
   useEffect(() => {
     if (isOpen) {
@@ -91,7 +96,7 @@ export const WalletModal = ({
           break;
       }
     }
-  }, [isOpen, qrState, walletStatus, qrMsg]);
+  }, [isOpen, qrState, walletStatus, qrMsg, message]);
 
   const onCloseModal = useCallback(() => {
     setOpen(false);
@@ -111,10 +116,14 @@ export const WalletModal = ({
         ViewComponent = modalViews[`${currentView}`] as (
           props: WalletListViewProps
         ) => JSX.Element;
+        const wallets =
+          walletRepo?.isMobile && !includeAllWalletsOnMobile
+            ? walletRepo?.wallets.filter((w) => !w.walletInfo.mobileDisabled)
+            : walletRepo?.wallets;
         return (
           <ViewComponent
             onClose={onCloseModal}
-            wallets={walletRepo?.wallets || []}
+            wallets={wallets || []}
             initialFocus={initialFocus}
           />
         );
@@ -140,6 +149,8 @@ export const WalletModal = ({
     qrState,
     walletStatus,
     walletRepo,
+    message,
+    qrMsg,
   ]);
 
   return (

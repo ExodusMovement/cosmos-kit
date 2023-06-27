@@ -1,12 +1,8 @@
 {
   "index": "Introduction",
   "get-started": "Get Started",
-  "integrating-wallets": "Integrating Wallets",
-  "chain-provider": "Chain Provider",
-  "use-chain": "Hook - useChain",
-  "use-manager": "Hook - useManager",
-  "use-name-service": "Hook - useNameService",
-  "use-modal-theme": "Hook - useModalTheme",
-  "wallet-provider": "Wallet Provider (Deprecated since v1.0.0)",
-  "use-wallet": "Hook - useWallet (Deprecated since v1.0.0)"
+  "provider": "Provider",
+  "hooks": "Hooks",
+  "cosmos": "Cosmos",
+  "integrating-wallets": "Integrating Wallets"
 }

@@ -5,7 +5,10 @@ import {
   BroadcastMode,
   ChainRecord,
   DirectSignDoc,
+  ExtendedHttpEndpoint,
   SignOptions,
+  SignType,
+  SuggestToken,
   WalletClient,
 } from '@cosmos-kit/core';
 
@@ -30,15 +33,38 @@ export class CosmostationClient implements WalletClient {
     return this.client.providers.keplr;
   }
 
+  async suggestToken({ chainName, tokens, type }: SuggestToken) {
+    if (type === 'cw20') {
+      await this.cosmos.request({
+        method: "cos_addTokensCW20",
+        params: {
+          chainName,
+          tokens
+        },
+      });
+    }
+  };
+
+  async getSimpleAccount(chainId: string) {
+    const { address, username } = await this.getAccount(chainId);
+    return {
+      namespace: 'cosmos',
+      chainId,
+      address,
+      username,
+    };
+  }
+
   async getAccount(chainId: string) {
     const key = (await this.cosmos.request({
       method: 'cos_requestAccount',
       params: { chainName: chainId },
     })) as RequestAccountResponse;
     return {
-      name: key.name,
+      username: key.name,
       address: key.address,
       pubkey: key.publicKey,
+      algo: key.algo,
     };
   }
 
@@ -63,8 +89,16 @@ export class CosmostationClient implements WalletClient {
     }
   }
 
-  getOfflineSigner(chainId: string) {
-    return this.ikeplr.getOfflineSignerAuto(chainId);
+  getOfflineSigner(chainId: string, preferredSignType?: SignType) {
+    switch (preferredSignType) {
+      case 'amino':
+        return this.getOfflineSignerAmino(chainId);
+      case 'direct':
+        return this.getOfflineSignerDirect(chainId);
+      default:
+        return this.getOfflineSignerAmino(chainId);
+    }
+    // return this.ikeplr.getOfflineSignerAuto(chainId);
   }
 
   getOfflineSignerAmino(chainId: string) {
@@ -81,7 +115,9 @@ export class CosmostationClient implements WalletClient {
       chainInfo.assetList ? [chainInfo.assetList] : []
     );
     if (chainInfo.preferredEndpoints?.rest?.[0]) {
-      (suggestChain.restURL as string) = chainInfo.preferredEndpoints?.rest?.[0];
+      (suggestChain.restURL as
+        | string
+        | ExtendedHttpEndpoint) = chainInfo.preferredEndpoints?.rest?.[0];
     }
     const result = (await this.cosmos.request({
       method: 'cos_addChain',

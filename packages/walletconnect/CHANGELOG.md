@@ -3,6 +3,308 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.13](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.12...@cosmos-kit/walletconnect@0.3.13) (2023-06-08)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.12](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.11...@cosmos-kit/walletconnect@0.3.12) (2023-06-08)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.11](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.10...@cosmos-kit/walletconnect@0.3.11) (2023-06-05)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.10](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.9...@cosmos-kit/walletconnect@0.3.10) (2023-06-02)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.9](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.8...@cosmos-kit/walletconnect@0.3.9) (2023-06-01)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.8](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.7...@cosmos-kit/walletconnect@0.3.8) (2023-05-30)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.7](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.6...@cosmos-kit/walletconnect@0.3.7) (2023-05-16)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.6](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.5...@cosmos-kit/walletconnect@0.3.6) (2023-05-15)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.5](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.4...@cosmos-kit/walletconnect@0.3.5) (2023-05-04)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.4](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.3...@cosmos-kit/walletconnect@0.3.4) (2023-04-28)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.3](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.2...@cosmos-kit/walletconnect@0.3.3) (2023-04-25)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.2](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.1...@cosmos-kit/walletconnect@0.3.2) (2023-04-24)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.3.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.3.0...@cosmos-kit/walletconnect@0.3.1) (2023-04-24)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+# [0.3.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.19...@cosmos-kit/walletconnect@0.3.0) (2023-04-23)
+
+
+### Features
+
+* only call setMessage if defined ([9527711](https://github.com/cosmology-tech/cosmos-kit/commit/95277114ec63b65b5887f848bf8ca552afb4a40a))
+
+
+
+
+
+## [0.2.19](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.18...@cosmos-kit/walletconnect@0.2.19) (2023-04-20)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.18](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.17...@cosmos-kit/walletconnect@0.2.18) (2023-04-20)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.17](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.16...@cosmos-kit/walletconnect@0.2.17) (2023-04-14)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.16](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.15...@cosmos-kit/walletconnect@0.2.16) (2023-04-07)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.15](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.14...@cosmos-kit/walletconnect@0.2.15) (2023-03-31)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.14](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.13...@cosmos-kit/walletconnect@0.2.14) (2023-03-27)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.13](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.12...@cosmos-kit/walletconnect@0.2.13) (2023-03-17)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.12](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.11...@cosmos-kit/walletconnect@0.2.12) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.11](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.10...@cosmos-kit/walletconnect@0.2.11) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.10](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.9...@cosmos-kit/walletconnect@0.2.10) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.9](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.8...@cosmos-kit/walletconnect@0.2.9) (2023-03-14)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.8](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.7...@cosmos-kit/walletconnect@0.2.8) (2023-03-14)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.7](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.6...@cosmos-kit/walletconnect@0.2.7) (2023-03-13)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.6](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.5...@cosmos-kit/walletconnect@0.2.6) (2023-03-09)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.5](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.4...@cosmos-kit/walletconnect@0.2.5) (2023-03-07)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.4](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.3...@cosmos-kit/walletconnect@0.2.4) (2023-03-03)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.3](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.2...@cosmos-kit/walletconnect@0.2.3) (2023-02-28)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.2](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.1...@cosmos-kit/walletconnect@0.2.2) (2023-02-28)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.2.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.2.0...@cosmos-kit/walletconnect@0.2.1) (2023-02-27)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+# [0.2.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.1.20...@cosmos-kit/walletconnect@0.2.0) (2023-02-27)
+
+
+### Features
+
+* leap account change and debug ([9006aac](https://github.com/cosmology-tech/cosmos-kit/commit/9006aac6c453262e9ac890c34616622b50dc5766))
+
+
+
+
+
+## [0.1.20](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.1.19...@cosmos-kit/walletconnect@0.1.20) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.1.19](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.1.18...@cosmos-kit/walletconnect@0.1.19) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
+## [0.1.18](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.1.17...@cosmos-kit/walletconnect@0.1.18) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/walletconnect
+
+
+
+
+
 ## [0.1.17](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/walletconnect@0.1.16...@cosmos-kit/walletconnect@0.1.17) (2023-02-23)
 
 **Note:** Version bump only for package @cosmos-kit/walletconnect

@@ -2,7 +2,7 @@ import { AssetList, Chain } from '@chain-registry/types';
 import Bowser from 'bowser';
 import EventEmitter from 'events';
 
-import { MainWalletBase, StateBase } from './bases';
+import { ChainWalletBase, MainWalletBase, StateBase } from './bases';
 import { NameService } from './name-service';
 import { WalletRepo } from './repository';
 import {
@@ -10,6 +10,7 @@ import {
   ChainRecord,
   DeviceType,
   EndpointOptions,
+  EventName,
   NameServiceName,
   OS,
   SessionOptions,
@@ -17,6 +18,7 @@ import {
   SimpleAccount,
   State,
   WalletConnectOptions,
+  WalletName,
 } from './types';
 import {
   convertChain,
@@ -29,22 +31,20 @@ export class WalletManager extends StateBase {
   chainRecords: ChainRecord[] = [];
   walletRepos: WalletRepo[] = [];
   defaultNameService: NameServiceName = 'icns';
-  private _wallets: MainWalletBase[] = [];
+  mainWallets: MainWalletBase[] = [];
   coreEmitter: EventEmitter;
-
-  readonly sessionOptions: SessionOptions = {
-    duration: 1800000,
-    callback: () =>
-      window?.localStorage.removeItem('cosmos-kit@1:core//accounts'),
-  };
   walletConnectOptions?: WalletConnectOptions;
   readonly session: Session;
+  repelWallet: boolean = true; // only allow one wallet type to connect at one time. i.e. you cannot connect keplr and cosmostation at the same time
+  isLazy?: boolean; // stands for `globalIsLazy` setting
+  throwErrors: boolean;
 
   constructor(
     chains: Chain[],
     assetLists: AssetList[],
     wallets: MainWalletBase[],
     logger: Logger,
+    throwErrors: boolean = false,
     defaultNameService?: NameServiceName,
     walletConnectOptions?: WalletConnectOptions,
     signerOptions?: SignerOptions,
@@ -52,11 +52,18 @@ export class WalletManager extends StateBase {
     sessionOptions?: SessionOptions
   ) {
     super();
+    this.throwErrors = throwErrors;
     this.coreEmitter = new EventEmitter();
     this.logger = logger;
     if (defaultNameService) this.defaultNameService = defaultNameService;
-    if (sessionOptions) this.sessionOptions = sessionOptions;
-    this.session = new Session(this.sessionOptions);
+    this.session = new Session({
+      duration: 1800000,
+      callback: () => {
+        this.mainWallets.forEach((w) => w.disconnectAll(false));
+        window?.localStorage.removeItem('cosmos-kit@1:core//accounts');
+      },
+      ...sessionOptions,
+    });
     this.walletConnectOptions = walletConnectOptions;
     this.init(
       chains,
@@ -79,18 +86,22 @@ export class WalletManager extends StateBase {
     this.logger.info(
       `${chains.length} chains and ${wallets.length} wallets are provided!`
     );
+    this.isLazy = endpointOptions?.isLazy;
 
     this.chainRecords = chains.map((chain) =>
       convertChain(
         chain,
         assetLists,
         signerOptions,
-        endpointOptions?.[chain.chain_name]
+        endpointOptions?.endpoints?.[chain.chain_name],
+        this.isLazy,
+        this.logger
       )
     );
 
-    this._wallets = wallets.map((wallet) => {
+    this.mainWallets = wallets.map((wallet) => {
       wallet.logger = this.logger;
+      wallet.throwErrors = this.throwErrors;
       wallet.session = this.session;
       wallet.walletConnectOptions = this.walletConnectOptions;
       wallet.setChains(this.chainRecords);
@@ -100,26 +111,38 @@ export class WalletManager extends StateBase {
     this.chainRecords.forEach((chainRecord) => {
       const repo = new WalletRepo(
         chainRecord,
-        wallets.map(({ getChainWallet }) => getChainWallet(chainRecord.name)!),
-        this.sessionOptions
+        wallets.map(({ getChainWallet }) => getChainWallet(chainRecord.name)!)
       );
       repo.logger = this.logger;
+      repo.repelWallet = this.repelWallet;
+      repo.session = this.session;
       this.walletRepos.push(repo);
     });
+  }
+
+  setWalletRepel(value: boolean) {
+    this.repelWallet = value;
+    this.walletRepos.forEach((repo) => (repo.repelWallet = value));
+    window?.localStorage.setItem(
+      'cosmos-kit@1:core//repel-wallet',
+      value.toString()
+    );
   }
 
   addChains = (
     chains: Chain[],
     assetLists: AssetList[],
     signerOptions?: SignerOptions,
-    endpointOptions?: EndpointOptions
+    endpoints?: EndpointOptions['endpoints']
   ) => {
     const newChainRecords = chains.map((chain) =>
       convertChain(
         chain,
         assetLists,
         signerOptions,
-        endpointOptions?.[chain.chain_name]
+        endpoints?.[chain.chain_name],
+        this.isLazy,
+        this.logger
       )
     );
     newChainRecords.forEach((chainRecord) => {
@@ -133,21 +156,17 @@ export class WalletManager extends StateBase {
       }
     });
 
-    this._wallets.forEach((wallet) => {
+    this.mainWallets.forEach((wallet) => {
       wallet.setChains(newChainRecords, false);
     });
 
-    const newWalletRepos = newChainRecords.map((chainRecord) => {
-      return new WalletRepo(
+    newChainRecords.forEach((chainRecord) => {
+      const repo = new WalletRepo(
         chainRecord,
-        this._wallets.map(
+        this.mainWallets.map(
           ({ getChainWallet }) => getChainWallet(chainRecord.name)!
-        ),
-        this.sessionOptions
+        )
       );
-    });
-
-    newWalletRepos.forEach((repo) => {
       repo.setActions({
         viewOpen: this.actions?.viewOpen,
         viewWalletRepo: this.actions?.viewWalletRepo,
@@ -160,6 +179,8 @@ export class WalletManager extends StateBase {
         });
       });
       repo.logger = this.logger;
+      repo.repelWallet = this.repelWallet;
+      repo.session = this.session;
 
       const index = this.walletRepos.findIndex(
         (repo2) => repo2.chainName !== repo.chainName
@@ -172,17 +193,27 @@ export class WalletManager extends StateBase {
     });
   };
 
-  on(event: string, handler: (params: any) => void) {
+  on = (event: EventName, handler: (params: any) => void) => {
     this.coreEmitter.on(event, handler);
-  }
+  };
 
-  off(event: string, handler: (params: any) => void) {
+  off = (event: EventName, handler: (params: any) => void) => {
     this.coreEmitter.off(event, handler);
-  }
+  };
 
   get activeRepos(): WalletRepo[] {
     return this.walletRepos.filter((repo) => repo.isActive === true);
   }
+
+  getMainWallet = (walletName: WalletName): MainWalletBase => {
+    const wallet = this.mainWallets.find((w) => w.walletName === walletName);
+
+    if (!wallet) {
+      throw new Error(`Wallet ${walletName} is not provided.`);
+    }
+
+    return wallet;
+  };
 
   getWalletRepo = (chainName: ChainName): WalletRepo => {
     const walletRepo = this.walletRepos.find(
@@ -194,6 +225,20 @@ export class WalletManager extends StateBase {
     }
 
     return walletRepo;
+  };
+
+  getChainWallet = (
+    chainName: ChainName,
+    walletName: WalletName
+  ): ChainWalletBase => {
+    const chainWallet: ChainWalletBase | undefined = this.getMainWallet(
+      walletName
+    ).getChainWallet(chainName);
+
+    if (!chainWallet) {
+      throw new Error(`${chainName} is not provided!`);
+    }
+    return chainWallet;
   };
 
   getChainRecord = (chainName: ChainName): ChainRecord => {
@@ -241,14 +286,14 @@ export class WalletManager extends StateBase {
     return await this.getWalletRepo(_chainName).getNameService();
   };
 
-  private _handleConnect = async () => {
-    this.logger?.info('[CORE EVENT] Emit `refresh_connection`');
+  private _reconnect = async () => {
+    this.logger?.debug('[CORE EVENT] Emit `refresh_connection`');
     this.coreEmitter.emit('refresh_connection');
     const walletName = window.localStorage.getItem(
       'cosmos-kit@1:core//current-wallet'
     );
     if (walletName) {
-      await this.activeRepos[0]?.connect(walletName);
+      this.getMainWallet(walletName).getChainWalletList(true)[0]?.connect(true);
     }
   };
 
@@ -259,38 +304,31 @@ export class WalletManager extends StateBase {
     const accountsStr = window.localStorage.getItem(
       'cosmos-kit@1:core//accounts'
     );
-    if (accountsStr) {
+    if (walletName && accountsStr) {
       const accounts: SimpleAccount[] = JSON.parse(accountsStr);
       accounts.forEach((data) => {
-        if (data.namespace !== 'cosmos') return;
-
-        const chainWallet = this.walletRepos
-          .find((repo) => repo.chainRecord.chain.chain_id === data.chainId)
-          ?.wallets.find((cw) => cw.walletName === walletName);
-
+        const mainWallet = this.getMainWallet(walletName);
+        mainWallet.activate();
+        const chainWallet = mainWallet
+          .getChainWalletList(false)
+          .find(
+            (w) =>
+              w.chainRecord.chain.chain_id === data.chainId &&
+              w.namespace === data.namespace
+          );
         chainWallet?.setData(data);
         chainWallet?.setState(State.Done);
       });
+    }
+    if (walletName) {
+      await this._reconnect();
     }
   };
 
   onMounted = async () => {
     if (typeof window === 'undefined') return;
 
-    // console.log('%cmanager.ts line:269 window', 'color: #007acc;', window);
     this._restoreAccounts();
-
-    this._wallets.forEach(async (wallet) => {
-      if (wallet.walletInfo.mode === 'wallet-connect') {
-        await wallet.initClient(this.walletConnectOptions);
-        wallet.emitter?.emit('broadcast_client', wallet.client);
-        this.logger?.info('[WALLET EVENT] Emit `broadcast_client`');
-      } else {
-        await wallet.initClient();
-        wallet.emitter?.emit('broadcast_client', wallet.client);
-        this.logger?.info('[WALLET EVENT] Emit `broadcast_client`');
-      }
-    });
 
     const parser = Bowser.getParser(window.navigator.userAgent);
     const env = {
@@ -301,31 +339,42 @@ export class WalletManager extends StateBase {
     this.setEnv(env);
     this.walletRepos.forEach((repo) => repo.setEnv(env));
 
-    this._wallets.forEach((wallet) => {
+    this.mainWallets.forEach(async (wallet) => {
+      wallet.setEnv(env);
+      wallet.emitter?.emit('broadcast_env', env);
+
       wallet.walletInfo.connectEventNamesOnWindow?.forEach((eventName) => {
-        window.addEventListener(eventName, this._handleConnect);
+        window.addEventListener(eventName, this._reconnect);
       });
       wallet.walletInfo.connectEventNamesOnClient?.forEach(
         async (eventName) => {
-          wallet.client?.on?.(eventName, this._handleConnect);
+          wallet.client?.on?.(eventName, this._reconnect);
         }
       );
-    });
 
-    this.actions?.viewOpen?.(false);
+      if (wallet.walletInfo.mode === 'wallet-connect') {
+        await wallet.initClient(this.walletConnectOptions);
+        wallet.emitter?.emit('broadcast_client', wallet.client);
+        this.logger?.debug('[WALLET EVENT] Emit `broadcast_client`');
+      } else {
+        await wallet.initClient();
+        wallet.emitter?.emit('broadcast_client', wallet.client);
+        this.logger?.debug('[WALLET EVENT] Emit `broadcast_client`');
+      }
+    });
   };
 
   onUnmounted = () => {
     if (typeof window === 'undefined') {
       return;
     }
-    this._wallets.forEach((wallet) => {
+    this.mainWallets.forEach((wallet) => {
       wallet.walletInfo.connectEventNamesOnWindow?.forEach((eventName) => {
-        window.removeEventListener(eventName, this._handleConnect);
+        window.removeEventListener(eventName, this._reconnect);
       });
       wallet.walletInfo.connectEventNamesOnClient?.forEach(
         async (eventName) => {
-          wallet.client?.off?.(eventName, this._handleConnect);
+          wallet.client?.off?.(eventName, this._reconnect);
         }
       );
     });

@@ -2,12 +2,17 @@
 /* eslint-disable no-console */
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import { StargateClient } from '@cosmjs/stargate';
-import EventEmitter from 'events';
 
 import { ChainWalletBase } from './bases/chain-wallet';
 import { StateBase } from './bases/state';
 import { NameService } from './name-service';
-import { AppEnv, ChainRecord, SessionOptions, WalletName } from './types';
+import {
+  DappEnv,
+  ChainRecord,
+  WalletName,
+  ExtendedHttpEndpoint,
+} from './types';
+import { Session } from './utils';
 
 /**
  * Store all ChainWallets for a particular Chain.
@@ -16,22 +21,16 @@ export class WalletRepo extends StateBase {
   isActive = false;
   chainRecord: ChainRecord;
   private _wallets: ChainWalletBase[];
-  options = {
-    mutexWallet: true, // only allow one wallet type to connect one time
-  };
-  sessionOptions?: SessionOptions;
+  namespace = 'cosmos';
+  session: Session;
+  repelWallet: boolean = true;
 
-  constructor(
-    chainRecord: ChainRecord,
-    wallets: ChainWalletBase[] = [],
-    sessionOptions?: SessionOptions
-  ) {
+  constructor(chainRecord: ChainRecord, wallets: ChainWalletBase[] = []) {
     super();
     this.chainRecord = chainRecord;
-    this.sessionOptions = sessionOptions;
     this._wallets = wallets;
 
-    if (this.options.mutexWallet) {
+    if (this.repelWallet) {
       this.wallets.forEach((w) => {
         w.updateCallbacks({
           ...w.callbacks,
@@ -47,7 +46,7 @@ export class WalletRepo extends StateBase {
     }
   }
 
-  setEnv(env?: AppEnv): void {
+  setEnv(env?: DappEnv): void {
     this._env = env;
     this.wallets.forEach((w) => w.setEnv(env));
   }
@@ -74,11 +73,6 @@ export class WalletRepo extends StateBase {
   }
 
   get wallets(): ChainWalletBase[] {
-    if (this.isMobile) {
-      return this._wallets.filter(
-        (wallet) => !wallet.walletInfo.mobileDisabled
-      );
-    }
     return this._wallets;
   }
 
@@ -86,11 +80,10 @@ export class WalletRepo extends StateBase {
     return this.wallets.length === 1;
   }
 
-  // you should never use current when `uniqueWallet` is set false
   get current(): ChainWalletBase | undefined {
-    if (!this.options.mutexWallet) {
+    if (!this.repelWallet) {
       this.logger.warn(
-        "It's meaningless to use current when `uniqueWallet` is set false."
+        'when `repelWallet` is set false, `current` is always undefined.'
       );
       return void 0;
     }
@@ -113,8 +106,7 @@ export class WalletRepo extends StateBase {
   connect = async (walletName?: WalletName, sync?: boolean) => {
     if (walletName) {
       const wallet = this.getWallet(walletName);
-      this.openView();
-      await wallet?.connect(this.sessionOptions, void 0, sync);
+      await wallet?.connect(sync);
     } else {
       this.openView();
     }
@@ -122,61 +114,85 @@ export class WalletRepo extends StateBase {
 
   disconnect = async (walletName?: WalletName, sync?: boolean) => {
     if (walletName) {
-      await this.getWallet(walletName)?.disconnect(void 0, sync);
+      await this.getWallet(walletName)?.disconnect(sync);
     } else {
-      await this.current.disconnect(void 0, sync);
+      await this.current.disconnect(sync);
     }
   };
 
-  getRpcEndpoint = async (): Promise<string> => {
+  getRpcEndpoint = async (
+    isLazy?: boolean
+  ): Promise<string | ExtendedHttpEndpoint> => {
     for (const wallet of this.wallets) {
       try {
-        return await wallet.getRpcEndpoint();
-      } catch (error) {}
+        return await wallet.getRpcEndpoint(isLazy);
+      } catch (error) {
+        this.logger?.debug(
+          `${(error as Error).name}: ${(error as Error).message}`
+        );
+      }
     }
-    throw new Error(`No valid RPC endpoint for chain ${this.chainName}!`);
+    return Promise.reject(`No valid RPC endpoint for chain ${this.chainName}!`);
   };
 
-  getRestEndpoint = async (): Promise<string> => {
+  getRestEndpoint = async (
+    isLazy?: boolean
+  ): Promise<string | ExtendedHttpEndpoint> => {
     for (const wallet of this.wallets) {
       try {
-        return await wallet.getRestEndpoint();
-      } catch (error) {}
+        return await wallet.getRestEndpoint(isLazy);
+      } catch (error) {
+        this.logger?.debug(
+          `${(error as Error).name}: ${(error as Error).message}`
+        );
+      }
     }
-    throw new Error(`No valid REST endpoint for chain ${this.chainName}!`);
+    return Promise.reject(
+      `No valid REST endpoint for chain ${this.chainName}!`
+    );
   };
 
   getStargateClient = async (): Promise<StargateClient> => {
     for (const wallet of this.wallets) {
       try {
         return await wallet.getStargateClient();
-      } catch (error) {}
+      } catch (error) {
+        this.logger?.debug(
+          `${(error as Error).name}: ${(error as Error).message}`
+        );
+      }
     }
-    throw new Error(
+    return Promise.reject(
       `Something wrong! Probably no valid RPC endpoint for chain ${this.chainName}.`
     );
   };
 
   getCosmWasmClient = async (): Promise<CosmWasmClient> => {
     for (const wallet of this.wallets) {
-      const client = await wallet.getCosmWasmClient();
-      if (client) {
-        return client;
+      try {
+        return await wallet.getCosmWasmClient();
+      } catch (error) {
+        this.logger?.debug(
+          `${(error as Error).name}: ${(error as Error).message}`
+        );
       }
     }
-    throw new Error(
+    return Promise.reject(
       `Something wrong! Probably no valid RPC endpoint for chain ${this.chainName}.`
     );
   };
 
   getNameService = async (): Promise<NameService> => {
     for (const wallet of this.wallets) {
-      const service = await wallet.getNameService();
-      if (service) {
-        return service;
+      try {
+        return await wallet.getNameService();
+      } catch (error) {
+        this.logger?.debug(
+          `${(error as Error).name}: ${(error as Error).message}`
+        );
       }
     }
-    throw new Error(
+    return Promise.reject(
       `Something wrong! Probably no valid RPC endpoint or name service is not registered for chain ${this.chainName}.`
     );
   };

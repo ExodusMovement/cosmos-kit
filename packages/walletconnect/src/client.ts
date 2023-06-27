@@ -3,14 +3,21 @@ import {
   OfflineAminoSigner,
   StdSignDoc,
 } from '@cosmjs/amino';
-import { DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 import {
+  Algo,
+  DirectSignResponse,
+  OfflineDirectSigner,
+} from '@cosmjs/proto-signing';
+import {
+  AppUrl,
+  DappEnv,
   DirectSignDoc,
   ExpiredError,
   Logger,
   Mutable,
   RejectedError,
   SignOptions,
+  SignType,
   SimpleAccount,
   State,
   Wallet,
@@ -20,23 +27,24 @@ import {
   WalletConnectOptions,
 } from '@cosmos-kit/core';
 import SignClient from '@walletconnect/sign-client';
-import { getSdkError } from '@walletconnect/utils';
 import { PairingTypes, SessionTypes } from '@walletconnect/types';
+import { getSdkError } from '@walletconnect/utils';
 import EventEmitter from 'events';
-import { WCAccount } from './types';
+import Long from 'long';
+
+import { WCAccount, WCSignDirectRequest, WCSignDirectResponse } from './types';
 import { CoreUtil } from './utils';
 
 const EXPLORER_API = 'https://explorer-api.walletconnect.com';
 
 export class WCClient implements WalletClient {
   readonly walletInfo: Wallet;
-  walletProjectId: string; // walletconnect wallet project id
-  walletWCName: string; // walletconnect wallet name
+
   signClient?: SignClient;
-  wcWalletInfo?: any;
+  wcCloudInfo?: any; // info from WalletConnect Cloud Explorer
   actions?: WalletClientActions;
   qrUrl: Mutable<string>;
-  appUrl: Mutable<string>;
+  appUrl: Mutable<AppUrl>;
 
   pairings: PairingTypes.Struct[] = [];
   sessions: SessionTypes.Struct[] = [];
@@ -44,6 +52,7 @@ export class WCClient implements WalletClient {
   logger?: Logger;
   options?: WalletConnectOptions;
   relayUrl?: string;
+  env?: DappEnv;
 
   constructor(walletInfo: Wallet) {
     if (!walletInfo.walletconnect) {
@@ -52,11 +61,33 @@ export class WCClient implements WalletClient {
       );
     }
     this.walletInfo = walletInfo;
-    this.walletProjectId = walletInfo.walletconnect!.projectId;
-    this.walletWCName = walletInfo.walletconnect!.name;
 
     this.qrUrl = { state: State.Init };
     this.appUrl = { state: State.Init };
+  }
+
+  get isMobile() {
+    return this.env?.device === 'mobile';
+  }
+
+  // walletconnect wallet name
+  get wcName(): string {
+    return this.walletInfo.walletconnect.name;
+  }
+
+  // wallet defined bytes encoding
+  get wcEncoding(): BufferEncoding {
+    return this.walletInfo.walletconnect.encoding || 'hex';
+  }
+
+  // walletconnect wallet project id
+  get wcProjectId(): string {
+    return this.walletInfo.walletconnect.projectId;
+  }
+
+  // walletconnect wallet mobile link
+  get wcMobile() {
+    return this.walletInfo.walletconnect.mobile;
   }
 
   get accounts(): SimpleAccount[] {
@@ -90,7 +121,7 @@ export class WCClient implements WalletClient {
       }
     });
     this.emitter?.emit('reset', chainIds);
-    this.logger?.info('[WALLET EVENT] Emit `reset`');
+    this.logger?.debug('[WALLET EVENT] Emit `reset`');
   }
 
   subscribeToEvents() {
@@ -99,11 +130,11 @@ export class WCClient implements WalletClient {
     }
 
     this.signClient.on('session_ping', (args) => {
-      this.logger?.info('EVENT', 'session_ping', args);
+      this.logger?.debug('EVENT', 'session_ping', args);
     });
 
     this.signClient.on('session_event', async (args) => {
-      this.logger?.info('EVENT', 'session_event', args);
+      this.logger?.debug('EVENT', 'session_event', args);
       // const {
       //   topic,
       //   params: { event, chainId },
@@ -118,7 +149,7 @@ export class WCClient implements WalletClient {
     });
 
     this.signClient.on('session_update', ({ topic, params }) => {
-      this.logger?.info('EVENT', 'session_update', { topic, params });
+      this.logger?.debug('EVENT', 'session_update', { topic, params });
       // if (this.session?.topic != topic) return;
 
       // const { namespaces } = params;
@@ -127,25 +158,25 @@ export class WCClient implements WalletClient {
     });
 
     this.signClient.on('session_delete', (args) => {
-      this.logger?.info('EVENT', 'session_delete', args);
+      this.logger?.debug('EVENT', 'session_delete', args);
       this.deleteSession(args.topic);
     });
 
     this.signClient.on('session_expire', (args) => {
-      this.logger?.info('EVENT', 'session_expire', args);
+      this.logger?.debug('EVENT', 'session_expire', args);
       this.deleteSession(args.topic);
     });
 
     this.signClient.on('session_proposal', (args) => {
-      this.logger?.info('EVENT', 'session_proposal', args);
+      this.logger?.debug('EVENT', 'session_proposal', args);
     });
 
     this.signClient.on('session_request', (args) => {
-      this.logger?.info('EVENT', 'session_request', args);
+      this.logger?.debug('EVENT', 'session_request', args);
     });
 
     this.signClient.on('proposal_expire', (args) => {
-      this.logger?.info('EVENT', 'proposal_expire', args);
+      this.logger?.debug('EVENT', 'proposal_expire', args);
     });
   }
 
@@ -159,7 +190,7 @@ export class WCClient implements WalletClient {
         code: 7001,
         message: 'Clear inactive pairings.',
       });
-      this.logger?.info('Delete inactive pairing:', pairing.topic);
+      this.logger?.debug('Delete inactive pairing:', pairing.topic);
     }
   }
 
@@ -171,10 +202,10 @@ export class WCClient implements WalletClient {
       .getAll({ active: true })
       .filter(
         (p) =>
-          p.peerMetadata?.name === this.walletWCName &&
+          p.peerMetadata?.name === this.wcName &&
           p.expiry * 1000 > Date.now() + 1000
       );
-    this.logger?.info('RESTORED PAIRINGS: ', this.pairings);
+    this.logger?.debug('RESTORED PAIRINGS: ', this.pairings);
   }
 
   get pairing(): PairingTypes.Struct | undefined {
@@ -189,10 +220,10 @@ export class WCClient implements WalletClient {
       .getAll()
       .filter(
         (s) =>
-          s.peer.metadata.name === this.walletWCName &&
+          s.peer.metadata.name === this.wcName &&
           s.expiry * 1000 > Date.now() + 1000
       );
-    this.logger?.info('RESTORED SESSIONS: ', this.sessions);
+    this.logger?.debug('RESTORED SESSIONS: ', this.sessions);
   }
 
   getSession(namespace: string, chainId: string) {
@@ -211,13 +242,6 @@ export class WCClient implements WalletClient {
     return this.options?.signClient.projectId;
   }
 
-  async fetchWCWalletInfo() {
-    const fetcUrl = `${EXPLORER_API}/v3/wallets?projectId=${this.dappProjectId}&sdks=sign_v2&search=${this.walletWCName}`;
-    const fetched = await (await fetch(fetcUrl)).json();
-    this.wcWalletInfo =
-      fetched.listings[this.walletInfo.walletconnect?.projectId!];
-  }
-
   setActions(actions: WalletClientActions) {
     this.actions = actions;
   }
@@ -230,9 +254,16 @@ export class WCClient implements WalletClient {
   setQRError(e?: Error | string) {
     this.setQRState(State.Error);
     this.qrUrl.message = typeof e === 'string' ? e : e?.message;
-    this.actions?.qrUrl?.message(this.qrUrl.message);
+    this.actions?.qrUrl?.message?.(this.qrUrl.message);
     if (typeof e !== 'string' && e?.stack) {
       this.logger?.error(e.stack);
+    }
+  }
+
+  async init() {
+    await this.initSignClient();
+    if (this.isMobile) {
+      await this.initAppUrl();
     }
   }
 
@@ -247,15 +278,103 @@ export class WCClient implements WalletClient {
     this.signClient = await SignClient.init(this.options?.signClient);
     this.relayUrl = this.options?.signClient.relayUrl;
 
-    this.logger?.info('CREATED CLIENT: ', this.signClient);
-    this.logger?.info('relayerRegion ', this.options?.signClient.relayUrl);
+    this.logger?.debug('CREATED CLIENT: ', this.signClient);
+    this.logger?.debug('relayerRegion ', this.options?.signClient.relayUrl);
 
     this.subscribeToEvents();
     this.restorePairings();
     this.restoreSessions();
   }
 
-  async connect(chainIds: string | string[], isMobile: boolean) {
+  async initWCCloudInfo() {
+    const fetcUrl = `${EXPLORER_API}/v3/wallets?projectId=${this.dappProjectId}&sdks=sign_v2&search=${this.wcName}`;
+    const fetched = await (await fetch(fetcUrl)).json();
+    this.wcCloudInfo =
+      fetched.listings[this.walletInfo.walletconnect?.projectId!];
+    this.logger?.debug('WalletConnect Info:', this.wcCloudInfo);
+  }
+
+  async initAppUrl() {
+    this.appUrl.state = State.Pending;
+
+    if (!this.wcCloudInfo) await this.initWCCloudInfo();
+
+    const native = this.wcCloudInfo.mobile.native || this.wcMobile?.native;
+    const universal =
+      this.wcCloudInfo.mobile.universal || this.wcMobile?.universal;
+
+    this.appUrl.data = { native, universal };
+    this.appUrl.state = State.Done;
+  }
+
+  get nativeUrl() {
+    const native = this.appUrl.data?.native;
+    if (typeof native === 'string' || typeof native === 'undefined') {
+      return native;
+    } else {
+      const { android, ios, macos, windows } = native;
+      switch (this.env?.os) {
+        case 'android':
+          return android;
+        case 'ios':
+          return ios;
+        case 'macos':
+          return macos;
+        case 'windows':
+          return windows;
+        default:
+          throw new Error(`Unknown os: ${this.env?.os}.`);
+      }
+    }
+  }
+
+  get universalUrl() {
+    return this.appUrl.data?.universal;
+  }
+
+  get redirectHref(): string | undefined {
+    return this.nativeUrl || this.universalUrl;
+  }
+
+  get redirectHrefWithWCUri(): string | undefined {
+    let href: string | undefined;
+    if (this.nativeUrl) {
+      href = (
+        this.walletInfo.walletconnect.formatNativeUrl ||
+        CoreUtil.formatNativeUrl
+      )(this.nativeUrl, this.qrUrl.data, this.env?.os, this.walletName);
+    } else if (this.universalUrl) {
+      href = (
+        this.walletInfo.walletconnect.formatUniversalUrl ||
+        CoreUtil.formatUniversalUrl
+      )(this.universalUrl, this.qrUrl.data, this.walletName);
+    }
+    return href;
+  }
+
+  get displayQRCode() {
+    if (this.pairing || this.redirect) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  get redirect() {
+    return Boolean(this.isMobile && (this.nativeUrl || this.universalUrl));
+  }
+
+  openApp(withWCUri = true) {
+    const href = withWCUri ? this.redirectHrefWithWCUri : this.redirectHref;
+    if (href) {
+      this.logger?.debug('Redirecting:', href);
+      CoreUtil.openHref(href);
+    } else {
+      this.logger?.error('No redirecting href.');
+    }
+  }
+
+  async connect(chainIds: string | string[]) {
     if (typeof this.signClient === 'undefined') {
       throw new Error('WalletConnect is not initialized');
     }
@@ -271,9 +390,9 @@ export class WCClient implements WalletClient {
 
     this.restorePairings();
     const pairing = this.pairing;
-    this.logger?.info('Restored active pairing topic is:', pairing?.topic);
+    this.logger?.debug('Restored active pairing topic is:', pairing?.topic);
 
-    if (!pairing) this.setQRState(State.Pending);
+    if (this.displayQRCode) this.setQRState(State.Pending);
 
     const requiredNamespaces = {
       cosmos: {
@@ -288,42 +407,36 @@ export class WCClient implements WalletClient {
     };
     let connectResp: any;
     try {
-      this.logger?.info('Connecting chains:', chainIdsWithNS);
+      this.logger?.debug('Connecting chains:', chainIdsWithNS);
       connectResp = await this.signClient.connect({
         pairingTopic: pairing?.topic,
         requiredNamespaces,
       });
+      if (typeof connectResp.uri === 'undefined') {
+        throw new Error('Failed to generate WalletConnect URI!');
+      }
       this.qrUrl.data = connectResp.uri;
-      this.logger?.info('Using QR URI:', connectResp.uri);
-      if (!pairing) this.setQRState(State.Done);
+      this.logger?.debug('Using QR URI:', connectResp.uri);
+      if (this.displayQRCode) this.setQRState(State.Done);
     } catch (error) {
       this.logger?.error('Client connect error: ', error);
-      if (!pairing) this.setQRError(error);
+      if (this.displayQRCode) this.setQRError(error);
       return;
     }
 
-    if (isMobile) {
-      this.appUrl.state = State.Pending;
-      this.appUrl.data = await this.getAppUrl();
-      this.appUrl.state = State.Done;
-      if (this.appUrl.data) {
-        CoreUtil.openHref(this.appUrl.data);
-      } else {
-        this.logger?.warn("Can't get app url:", this.walletName);
-      }
-    }
+    if (this.redirect) this.openApp();
 
     try {
       const session = await connectResp.approval();
-      this.logger?.info('Established session:', session);
+      this.logger?.debug('Established session:', session);
       this.sessions.push(session);
       this.restorePairings();
     } catch (error) {
       this.logger?.error('Session approval error: ', error);
       await this.deleteInactivePairings();
       if (!error) {
-        this.setQRError(ExpiredError);
-        throw new Error('QRCode Expired');
+        if (this.displayQRCode) this.setQRError(ExpiredError);
+        throw new Error('Proposal Expired');
       } else if (error.code == 5001) {
         throw RejectedError;
       } else {
@@ -336,29 +449,6 @@ export class WCClient implements WalletClient {
     }
   }
 
-  async getAppUrl(): Promise<string | undefined> {
-    if (!this.wcWalletInfo) {
-      await this.fetchWCWalletInfo();
-    }
-
-    const { native, universal } = this.wcWalletInfo.mobile as {
-      native: string | null;
-      universal: string | null;
-    };
-
-    let href: string | undefined;
-    if (universal) {
-      href = CoreUtil.formatUniversalUrl(
-        universal,
-        this.qrUrl.data,
-        this.walletName
-      );
-    } else if (native) {
-      href = CoreUtil.formatNativeUrl(native, this.qrUrl.data, this.walletName);
-    }
-    return href;
-  }
-
   async disconnect() {
     if (typeof this.signClient === 'undefined') {
       throw new Error('WalletConnect is not initialized');
@@ -369,7 +459,7 @@ export class WCClient implements WalletClient {
 
     for (const session of this.sessions) {
       try {
-        this.logger?.info('Delete session:', session);
+        this.logger?.debug('Delete session:', session);
         await this.signClient.disconnect({
           topic: session.topic,
           reason: getSdkError('USER_DISCONNECTED'),
@@ -383,22 +473,48 @@ export class WCClient implements WalletClient {
     }
     this.sessions = [];
     this.emitter?.emit('sync_disconnect');
-    this.logger?.info('[WALLET EVENT] Emit `sync_disconnect`');
+    this.logger?.debug('[WALLET EVENT] Emit `sync_disconnect`');
   }
 
-  async getAccount(chainId: string): Promise<WalletAccount> {
+  async getSimpleAccount(chainId: string): Promise<SimpleAccount> {
     const account = this.accounts.find(({ chainId: id }) => id === chainId);
     if (!account) {
       throw new Error(
         `Chain ${chainId} is not connected yet, please check the session approval namespaces`
       );
     }
-    return {
-      address: account.address,
-    };
+    return account;
   }
 
-  async getKey(chainId: string) {
+  getOfflineSignerAmino(chainId: string) {
+    return {
+      getAccounts: async () => [await this.getAccount(chainId)],
+      signAmino: (signerAddress: string, signDoc: StdSignDoc) =>
+        this.signAmino(chainId, signerAddress, signDoc),
+    } as OfflineAminoSigner;
+  }
+
+  getOfflineSignerDirect(chainId: string) {
+    return {
+      getAccounts: async () => [await this.getAccount(chainId)],
+      signDirect: (signerAddress: string, signDoc: DirectSignDoc) =>
+        this.signDirect(chainId, signerAddress, signDoc),
+    } as OfflineDirectSigner;
+  }
+
+  async getOfflineSigner(chainId: string, preferredSignType?: SignType) {
+    if (preferredSignType === 'amino' && this.getOfflineSignerAmino) {
+      return this.getOfflineSignerAmino(chainId);
+    }
+    if (preferredSignType === 'direct' && this.getOfflineSignerDirect) {
+      return this.getOfflineSignerDirect(chainId);
+    }
+    return this.getOfflineSignerAmino
+      ? this.getOfflineSignerAmino?.(chainId)
+      : this.getOfflineSignerDirect(chainId);
+  }
+
+  protected async _getAccount(chainId: string) {
     const session = this.getSession('cosmos', chainId);
     if (!session) {
       throw new Error(`Session for ${chainId} not established yet.`);
@@ -411,46 +527,35 @@ export class WCClient implements WalletClient {
         params: {},
       },
     });
-    const result = (resp as any)['result'][0] as WCAccount;
+    this.logger?.debug(`Response of cosmos_getAccounts`, resp);
+    return resp;
+  }
 
+  async getAccount(chainId: string): Promise<WalletAccount> {
+    const { address, algo, pubkey } = (
+      await this._getAccount(chainId)
+    )[0] as WCAccount;
     return {
-      address: result.address,
-      algo: result.algo,
-      pubkey: Buffer.from(result.pubkey, 'hex'),
+      address,
+      algo: algo as Algo,
+      pubkey: new Uint8Array(Buffer.from(pubkey, this.wcEncoding)),
     };
   }
 
-  getOfflineSignerAmino(chainId: string) {
-    return {
-      getAccounts: async () => [await this.getKey(chainId)],
-      signAmino: (signerAddress: string, signDoc: StdSignDoc) =>
-        this.signAmino(chainId, signerAddress, signDoc),
-    } as OfflineAminoSigner;
-  }
-
-  getOfflineSignerDirect(chainId: string) {
-    return {
-      getAccounts: async () => [await this.getKey(chainId)],
-      signDirect: (signerAddress: string, signDoc: DirectSignDoc) =>
-        this.signDirect(chainId, signerAddress, signDoc),
-    } as OfflineDirectSigner;
-  }
-
-  async getOfflineSigner(chainId: string) {
-    return this.getOfflineSignerDirect(chainId);
-  }
-
-  async signAmino(
+  protected async _signAmino(
     chainId: string,
     signer: string,
     signDoc: StdSignDoc,
     signOptions?: SignOptions
-  ): Promise<AminoSignResponse> {
+  ) {
     const session = this.getSession('cosmos', chainId);
     if (!session) {
       throw new Error(`Session for ${chainId} not established yet.`);
     }
-    return ((await this.signClient.request({
+
+    if (this.redirect) this.openApp();
+
+    const resp = await this.signClient.request({
       topic: session.topic,
       chainId: `cosmos:${chainId}`,
       request: {
@@ -460,7 +565,60 @@ export class WCClient implements WalletClient {
           signDoc,
         },
       },
-    })) as any)['result'] as AminoSignResponse;
+    });
+    this.logger?.debug(`Response of cosmos_signAmino`, resp);
+    return resp;
+  }
+
+  async signAmino(
+    chainId: string,
+    signer: string,
+    signDoc: StdSignDoc,
+    signOptions?: SignOptions
+  ): Promise<AminoSignResponse> {
+    const result = (await this._signAmino(
+      chainId,
+      signer,
+      signDoc,
+      signOptions
+    )) as AminoSignResponse;
+    return result;
+  }
+
+  protected async _signDirect(
+    chainId: string,
+    signer: string,
+    signDoc: DirectSignDoc,
+    signOptions?: SignOptions
+  ) {
+    const session = this.getSession('cosmos', chainId);
+    if (!session) {
+      throw new Error(`Session for ${chainId} not established yet.`);
+    }
+    const signDocValue: WCSignDirectRequest = {
+      signerAddress: signer,
+      signDoc: {
+        chainId: signDoc.chainId,
+        bodyBytes: Buffer.from(signDoc.bodyBytes).toString(this.wcEncoding),
+        authInfoBytes: Buffer.from(signDoc.authInfoBytes).toString(
+          this.wcEncoding
+        ),
+        accountNumber: signDoc.accountNumber.toString(),
+      },
+    };
+
+    if (this.redirect) this.openApp();
+
+    const resp = await this.signClient.request({
+      topic: session.topic,
+      chainId: `cosmos:${chainId}`,
+      request: {
+        method: 'cosmos_signDirect',
+        params: signDocValue,
+      },
+    });
+    this.logger?.debug(`Response of cosmos_signDirect`, resp);
+    return resp;
   }
 
   async signDirect(
@@ -469,21 +627,25 @@ export class WCClient implements WalletClient {
     signDoc: DirectSignDoc,
     signOptions?: SignOptions
   ): Promise<DirectSignResponse> {
-    const session = this.getSession('cosmos', chainId);
-    if (!session) {
-      throw new Error(`Session for ${chainId} not established yet.`);
-    }
-    return ((await this.signClient.request({
-      topic: session.topic,
-      chainId: `cosmos:${chainId}`,
-      request: {
-        method: 'cosmos_signDirect',
-        params: {
-          signerAddress: signer,
-          signDoc,
-        },
+    const { signed, signature } = (await this._signDirect(
+      chainId,
+      signer,
+      signDoc,
+      signOptions
+    )) as WCSignDirectResponse;
+    return {
+      signed: {
+        chainId: signed.chainId,
+        accountNumber: Long.fromString(signed.accountNumber, false),
+        authInfoBytes: new Uint8Array(
+          Buffer.from(signed.authInfoBytes, this.wcEncoding)
+        ),
+        bodyBytes: new Uint8Array(
+          Buffer.from(signed.bodyBytes, this.wcEncoding)
+        ),
       },
-    })) as any)['result'] as DirectSignResponse;
+      signature,
+    };
   }
 
   // restoreLatestSession() {
@@ -502,7 +664,7 @@ export class WCClient implements WalletClient {
 
   //   if (targetKey) {
   //     this.session = this.signClient.session.get(targetKey);
-  //     this.logger?.info('RESTORED LATEST SESSION:', this.session);
+  //     this.logger?.debug('RESTORED LATEST SESSION:', this.session);
   //   }
   // }
 }

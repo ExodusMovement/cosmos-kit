@@ -1,6 +1,6 @@
 import { StdSignDoc } from '@cosmjs/amino';
 import { Algo, OfflineDirectSigner } from '@cosmjs/proto-signing';
-import { BroadcastMode } from '@cosmos-kit/core';
+import { BroadcastMode, SignType } from '@cosmos-kit/core';
 import { DirectSignDoc, SignOptions, WalletClient } from '@cosmos-kit/core';
 
 import { XDEFI } from './types';
@@ -20,18 +20,36 @@ export class XDEFIClient implements WalletClient {
     await this.client.disconnect();
   }
 
+  async getSimpleAccount(chainId: string) {
+    const { address, username } = await this.getAccount(chainId);
+    return {
+      namespace: 'cosmos',
+      chainId,
+      address,
+      username,
+    };
+  }
+
   async getAccount(chainId: string) {
     const key = await this.client.getKey(chainId);
     return {
-      name: key.name,
+      username: key.name,
       address: key.bech32Address,
       algo: key.algo as Algo,
       pubkey: key.pubKey,
     };
   }
 
-  getOfflineSigner(chainId: string) {
-    return this.client.getOfflineSignerAuto(chainId);
+  getOfflineSigner(chainId: string, preferredSignType?: SignType) {
+    switch (preferredSignType) {
+      case 'amino':
+        return this.getOfflineSignerAmino(chainId);
+      case 'direct':
+        return this.getOfflineSignerDirect(chainId);
+      default:
+        return this.getOfflineSignerAmino(chainId);
+    }
+    // return this.client.getOfflineSignerAuto(chainId);
   }
 
   getOfflineSignerAmino(chainId: string) {

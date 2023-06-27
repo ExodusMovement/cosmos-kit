@@ -1,15 +1,23 @@
 /* eslint-disable no-alert */
 import { Asset, AssetList } from "@chain-registry/types";
-import { Center, Container } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Center,
+  Container,
+  Text,
+} from "@chakra-ui/react";
 import { StdFee } from "@cosmjs/amino";
 import { SigningStargateClient } from "@cosmjs/stargate";
-import { useChain } from "@cosmos-kit/react";
+import { useChain, useWalletClient } from "@cosmos-kit/react";
 import BigNumber from "bignumber.js";
 import { assets } from "chain-registry";
 import { cosmos } from "juno-network";
 import { useState } from "react";
 
 import { ChainsTXWalletSection, SendTokensCard } from "../components";
+import { ExtendedHttpEndpoint } from "@cosmos-kit/core";
 
 const chainName = "cosmoshub";
 
@@ -39,7 +47,7 @@ const sendTokens = (
       amount: [
         {
           denom: coin.base,
-          amount: "1000",
+          amount: "1",
         },
       ],
       toAddress: address,
@@ -50,7 +58,7 @@ const sendTokens = (
       amount: [
         {
           denom: coin.base,
-          amount: "2000",
+          amount: "1",
         },
       ],
       gas: "86364",
@@ -69,12 +77,17 @@ const sendTokens = (
 };
 
 export default function Home() {
-  const {
-    getSigningStargateClient,
-    address,
-    status,
-    getRpcEndpoint,
-  } = useChain(chainName);
+  const [cosmo_getAccount, setCosmo_getAccount] = useState<
+    string | undefined
+  >();
+  const [cosmos_signAmino, setCosmos_signAmino] = useState<
+    string | undefined
+  >();
+
+  const { getSigningStargateClient, address, status, getRpcEndpoint } =
+    useChain(chainName);
+
+  const { client } = useWalletClient();
 
   const [balance, setBalance] = useState(new BigNumber(0));
   const [isFetchingBalance, setFetchingBalance] = useState(false);
@@ -95,7 +108,10 @@ export default function Home() {
 
     // get RPC client
     const client = await cosmos.ClientFactory.createRPCQueryClient({
-      rpcEndpoint,
+      rpcEndpoint:
+        typeof rpcEndpoint === "string"
+          ? rpcEndpoint
+          : (rpcEndpoint as ExtendedHttpEndpoint).url,
     });
 
     // fetch balance
@@ -116,11 +132,29 @@ export default function Home() {
     setFetchingBalance(false);
   };
 
+  const directSignDoc = {
+    bodyBytes:
+      "0a90010a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412700a2d636f736d6f7331706b707472653766646b6c366766727a6c65736a6a766878686c63337234676d6d6b38727336122d636f736d6f7331717970717870713971637273737a673270767871367273307a716733797963356c7a763778751a100a0575636f736d120731323334353637",
+    authInfoBytes:
+      "0a0a0a0012040a020801180112130a0d0a0575636f736d12043230303010c09a0c",
+    chainId: "cosmoshub-4",
+    accountNumber: "1",
+  };
+
+  const aminoSignDoc = {
+    msgs: [],
+    fee: { amount: [], gas: "23" },
+    chain_id: "cosmoshub-4",
+    memo: "hello, world",
+    account_number: "7",
+    sequence: "54",
+  };
+
   return (
     <Container maxW="5xl" py={10}>
       <ChainsTXWalletSection chainName={chainName} />
 
-      <Center mb={16}>
+      <Center mb={16} flexDirection="column">
         <SendTokensCard
           isConnectWallet={status === "Connected"}
           balance={balance.toNumber()}
@@ -137,6 +171,46 @@ export default function Home() {
             getBalance();
           }}
         />
+        <Center marginY={16} flexDirection="column">
+          <Button
+            onClick={async () => {
+              const r = await (client as any).getAccount("cosmoshub-4");
+              setCosmo_getAccount(JSON.stringify(r));
+            }}
+          >
+            cosmos_getAccounts
+          </Button>
+          {cosmo_getAccount && (
+            <Card>
+              <CardBody>
+                <Text>{cosmo_getAccount}</Text>
+              </CardBody>
+            </Card>
+          )}
+        </Center>
+        <Center mb={16} flexDirection="column">
+          <Button
+            onClick={async () => {
+              if (address) {
+                const r = await client?.signAmino?.(
+                  "cosmoshub-4",
+                  address,
+                  aminoSignDoc
+                );
+                setCosmos_signAmino(JSON.stringify(r));
+              }
+            }}
+          >
+            cosmos_signAmino
+          </Button>
+          {cosmos_signAmino && (
+            <Card>
+              <CardBody>
+                <Text>{cosmos_signAmino}</Text>
+              </CardBody>
+            </Card>
+          )}
+        </Center>
       </Center>
     </Container>
   );

@@ -32,10 +32,12 @@ export interface Callbacks {
 export declare type OS = 'android' | 'ios' | 'windows' | 'macos';
 export declare type BrowserName = 'chrome' | 'firefox' | 'safari' | string;
 export declare type DeviceType = 'desktop' | 'mobile';
-export interface AppEnv {
+export interface DappEnv {
     device?: DeviceType;
     os?: OS;
     browser?: BrowserName;
 }
 export declare type CosmosClientType = 'stargate' | 'cosmwasm';
+export declare type SignType = 'amino' | 'direct';
 export declare type LogLevel = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+export declare type ModalTheme = 'light' | 'dark';

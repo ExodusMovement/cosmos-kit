@@ -1,8 +1,13 @@
 {
-    "index": "Wallet Integrations",
+    "index": "Introduction",
+    "adding-new-wallets": "Adding New Wallets",
     "keplr": "@ Keplr Wallet",
     "cosmostation": "@ Cosmostation Wallet",
     "leap": "@ Leap Wallet",
+    "trust": "@ Trust Wallet",
     "vectis": "@ Vectis Wallet",
-    "adding-new-wallets": "Adding New Wallets"
+    "station": "@ Station Wallet",
+    "frontier": "@ Frontier Wallet",
+    "web3auth": "@ Web3Auth",
+    "compass": "@ Compass"
 }

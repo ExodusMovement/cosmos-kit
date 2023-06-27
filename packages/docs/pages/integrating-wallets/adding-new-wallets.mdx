@@ -1,8 +1,15 @@
 # How to integrate new wallets into CosmosKit
 
+## About Wallet Logos
+  We put all wallet logos under `cosmos-kit/public/images/logos/wallets` folder, and use them through `raw.githubusercontent.com` domain.
+
+  When adding a new wallet, you need to specify the url of the wallet logo in `registry.ts`.  
+  Add the logo file to `cosmos-kit/public/images/logos/wallets` first when necessary.  
+  And set the value of `logo` to `https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/public/images/logos/wallets/wallet.ext`
+
 ## Quickly Add Extension Wallets
 
-1. Copy files in [Leap Extension](https://github.com/cosmology-tech/cosmos-kit/tree/main/packages/leap/src/extension) to your package;
+1. Copy files in [Leap Extension](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/leap-extension/src/extension) to your package;
 
 2. Replace `Leap` with your wallet name (*with first letter capitalized*) **globally**;
 
@@ -10,13 +17,13 @@
 
 4. Edit file `client.ts`, `registry.ts`, `types.ts` and `utils.ts`. Replace what is different from Leap with the new wallet specificated methods/properties.
 
-5. Construct the MainWallet (*class in `main-wallet.ts`*) instance and put it into `WalletProvider` `wallets` property.
+5. Construct the MainWallet (*class in `main-wallet.ts`*) instance and put it into `ChainProvider` `wallets` property.
 
 ## Quickly Add Mobile Wallets
 
-### For wallets support [Wallet Connect v1.0](https://docs.walletconnect.com/1.0)
+### For wallets support [Wallet Connect v2.0](https://docs.walletconnect.com/2.0)
 
-1. Copy files in [Keplr Mobile](https://github.com/cosmology-tech/cosmos-kit/tree/main/packages/keplr/src/wallet-connect) to your package;
+1. Copy files in [Keplr Mobile](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/keplr-mobile/src/wallet-connect) to your package;
 
 2. Replace `Keplr` with your wallet name (*with first letter capitalized*) **globally**;
 
@@ -24,7 +31,7 @@
 
 4. Edit file `client.ts`, `registry.ts` and `types.ts`. Replace what is different from Keplr with the new wallet specificated methods/properties. For `client.ts`, the main replacement would happen in `getAppUrl` and the `method` parameter of `sendCustomRequest`
 
-5. Construct the MainWallet (*class in `main-wallet.ts`*) instance and put it into `WalletProvider` `wallets` property.
+5. Construct the MainWallet (*class in `main-wallet.ts`*) instance and put it into `ChainProvider` `wallets` property.
 
 ## Add New Wallets from Scratch
 
@@ -32,31 +39,31 @@
 
 #### Required properties
 
-| Key      | Type | Description |
-| ----------- | ----------- | -- |
-| **name**      | `WalletName = string`   | identifier |
-| **prettyName**   | `string`   | display name |
-| **mode**   | `WalletMode = 'extension' \| 'wallet-connect'`   | wallet client type |
-| **mobileDisabled**<sup>*</sup>  | `boolean`   | display on mobile or not |
-| **walletconnect** | `{ name: string; projectId: string }`   | only required when you are using `@cosmos-kit/walletconnect` |
+| Key                            | Type                                                             | Description                                                                                                                                                                    |
+| ------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **name**                       | `WalletName = string`                                            | identifier                                                                                                                                                                     |
+| **prettyName**                 | `string`                                                         | display name                                                                                                                                                                   |
+| **mode**                       | `WalletMode = 'extension' \| 'wallet-connect'`                   | wallet client type                                                                                                                                                             |
+| **mobileDisabled**<sup>*</sup> | `boolean`                                                        | display on mobile or not                                                                                                                                                       |
+| **walletconnect**              | `{ name: string; projectId: string; encoding?: BufferEncoding }` | only required when you are integrating mobile wallets based on [walletconnect](https://walletconnect.com/). If `encoding` is undefined, by default using `hex` to encode bytes |
 
 \* <span style={{fontSize: '0.85rem'}}> Usually `true` when **mode** is `wallet-connect`,  `false` when **mode** is `extension`.</span>
 
 #### Optional properties
 
-| Key      | Type | Description |
-| ----------- | ----------- | -- |
-| **rejectMessage**      | `string | \{ source: string; target?: string \}`   | `rejectMessage` or `rejectMessage.source` is error message string thrown by wallet app/extension when user rejects, while `rejectMessage.target` is `message` returned by hooks. If not provided, `target` would be `'Request Rejected!'`|
-| **connectEventNamesOnWindow**   | `string[]`   | window event names to fire auto-connect |
-| **connectEventNamesOnClient**   | `string[]`   | wallet client event names to fire auto-connect (make sure `on` and `off` methods are defined in [`WalletClient`](#2️⃣-implement-walletclient)) |
-| **downloads**   | [`DownloadInfo[]`](https://github.com/cosmology-tech/cosmos-kit/blob/ce50648487e73c1f6f17777347df7984168381af/packages/core/src/types/wallet.ts#L28-L31) | wallet app/extension download information |
-| **logo** | `string`   | wallet logo url, display on default modal |
+| Key                           | Type                                                                                                                                                     | Description                                                                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **rejectMessage**             | `string                                                                                                                                                  | \{ source: string; target?: string \}`                                                                                                       | `rejectMessage` or `rejectMessage.source` is error message string thrown by wallet app/extension when user rejects, while `rejectMessage.target` is `message` returned by hooks. If not provided, `target` would be `'Request Rejected!'` |
+| **connectEventNamesOnWindow** | `string[]`                                                                                                                                               | window event names to fire auto-connect                                                                                                      |
+| **connectEventNamesOnClient** | `string[]`                                                                                                                                               | wallet client event names to fire auto-connect (make sure `on` and `off` methods are defined in [`WalletClient`](#2️⃣-implement-walletclient)) |
+| **downloads**                 | [`DownloadInfo[]`](https://github.com/cosmology-tech/cosmos-kit/blob/ce50648487e73c1f6f17777347df7984168381af/packages/core/src/types/wallet.ts#L28-L31) | wallet app/extension download information                                                                                                    |
+| **logo**                      | `string`                                                                                                                                                 | wallet logo url, display on default modal                                                                                                    |
 
 #### Examples
 
-- [Keplr Extension - Wallet Info](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/extension/registry.ts)
+- [Keplr Extension - Wallet Info](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/keplr-extension/src/extension/registry.ts)
 
-- [Keplr Mobile - Wallet Info](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/wallet-connect/registry.ts)
+- [Keplr Mobile - Wallet Info](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/keplr-extension/src/wallet-connect/registry.ts)
 
 
 ### 2️⃣ Implement `WalletClient`
@@ -65,32 +72,24 @@
 
 #### Required methods
 
-| Key      | Type | Description |
-| ----------- | ----------- | -- |
-| **getAccount**      | `(chainId: string) => Promise<WalletAccount>`<sup>*</sup>   | - |
-| **getOfflineSigner**   | `(chainId: string) => Promise<OfflineSigner>`   | if `isNanoLedger` or indefinite, will return `OfflineAminoSigner`, else return `OfflineDirectSigner` |
-
-\* *Type **WalletAccount***
-
-```ts
-interface WalletAccount {
-  name?: string; // username
-  address: string;
-}
-```
+| Key                  | Type                                          | Description                                             |
+| -------------------- | --------------------------------------------- | ------------------------------------------------------- |
+| **getSimpleAccount** | `(chainId: string) => Promise<SimpleAccount>` | return account with address but without pubkey and algo |
 
 #### Optional methods
 
-| Key      | Type | Description |
-| ----------- | ----------- | -- |
-| **enable**      | `(chainIds: string \| string[]) => Promise<void>`   | give permission for the webpage to access wallet |
-| **addChain**   | `(chainInfo: ChainRecord) => Promise<void>`   | add new Cosmos-SDK based blockchains that isn't natively integrated to wallet app/extension |
-| **on**   | `(type: string, listener: EventListenerOrEventListenerObject) => void`   | add event listener |
-| **off**   | `(type: string, listener: EventListenerOrEventListenerObject) => void`   | remove event listener |
+| Key                  | Type                                                                        | Description                                                                                                                                     |
+| -------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **getAccount**       | `(chainId: string) => Promise<WalletAccount>`<sup>*</sup>                   | return account with address, pubkey and algo                                                                                                    |
+| **getOfflineSigner** | `(chainId: string, preferredSignType?: SignType) => Promise<OfflineSigner>` | prioritize returning `preferredSignType` (by default `amino`) corresponding signer if it is available, otherwise return siger that is provided. |
+| **enable**           | `(chainIds: string \| string[]) => Promise<void>`                           | give permission for the webpage to access wallet                                                                                                |
+| **addChain**         | `(chainInfo: ChainRecord) => Promise<void>`                                 | add new Cosmos-SDK based blockchains that isn't natively integrated to wallet app/extension                                                     |
+| **on**               | `(type: string, listener: EventListenerOrEventListenerObject) => void`      | add event listener                                                                                                                              |
+| **off**              | `(type: string, listener: EventListenerOrEventListenerObject) => void`      | remove event listener                                                                                                                           |
 
 #### Examples
 
-- [Keplr Client](https://github.com/cosmology-tech/cosmos-kit/tree/main/packages/keplr/src/extension/client.ts)
+- [Keplr Client](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/keplr-extension/src/extension/client.ts)
 
 ### 3️⃣ Extend `ChainWalletBase`
 
@@ -100,9 +99,9 @@ Create a `ChainWallet` class that extends  `ChainWalletBase`. `ChainWallet` prov
 
 #### Examples
 
-- [Keplr Extension - Chain Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/extension/chain-wallet.ts)
+- [Keplr Extension - Chain Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/keplr-extension/src/extension/chain-wallet.ts)
 
-- [Keplr Mobile - Chain Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/wallet-connect/chain-wallet.ts)
+- [Keplr Mobile - Chain Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/main/packages/keplr/src/wallet-connect/chain-wallet.ts)
 
 
 ### 4️⃣ Extend `MainWalletBase`
@@ -113,9 +112,9 @@ Create a `MainWallet` class that extends `MainWalletBase`. `MainWallet` organize
 
 #### Required methods
 
-| Key      | Type |
-| ----------- | ----------- |
-| **initClient**      | `() => void \| Promise<void>`<sup>*</sup>   |
+| Key            | Type                                      |
+| -------------- | ----------------------------------------- |
+| **initClient** | `() => void \| Promise<void>`<sup>*</sup> |
 
 \* <span style={{fontSize: '0.85rem'}}> `WalletClient` is the one implemented in [Step 2](#2️⃣-implement-walletclient).</span>
 
@@ -123,9 +122,9 @@ Also, feel free to overwrite methods in `MainWalletBase` or add new methods/prop
 
 #### Examples
 
-- [Keplr Extension - Main Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/extension/main-wallet.ts)
+- [Keplr Extension - Main Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/main/wallets/keplr-extension/src/extension/main-wallet.ts)
 
-- [Keplr Mobile - Main Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/wallet-connect/main-wallet.ts)
+- [Keplr Mobile - Main Wallet](https://github.com/cosmology-tech/cosmos-kit/tree/main/packages/keplr/src/wallet-connect/main-wallet.ts)
 
 
 ### 5️⃣ Get `MainWallet` instance
@@ -134,6 +133,6 @@ You can construct your `MainWallet` Instance according to your `MainWallet` cons
 
 #### Examples
 
-- [keplrExtension & keplrMobile](https://github.com/cosmology-tech/cosmos-kit/tree/develop/packages/keplr/src/keplr.ts)
+- [keplrExtension & keplrMobile](https://github.com/cosmology-tech/cosmos-kit/tree/main/packages/keplr/src/keplr.ts)
 
-Last but not least, append this instance to the `wallets` property of [WalletProvider](https://docs.cosmoskit.com/get-started#provider).
+Last but not least, append this instance to the `wallets` property of [ChainProvider](/provider/chain-provider).

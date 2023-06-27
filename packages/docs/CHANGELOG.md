@@ -3,6 +3,361 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.9.40](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.39...docs@1.9.40) (2023-06-08)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.39](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.38...docs@1.9.39) (2023-06-08)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.38](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.37...docs@1.9.38) (2023-06-05)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.37](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.36...docs@1.9.37) (2023-06-02)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.36](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.35...docs@1.9.36) (2023-06-01)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.35](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.34...docs@1.9.35) (2023-05-30)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.34](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.33...docs@1.9.34) (2023-05-23)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.33](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.32...docs@1.9.33) (2023-05-18)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.32](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.31...docs@1.9.32) (2023-05-17)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.31](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.30...docs@1.9.31) (2023-05-16)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.30](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.29...docs@1.9.30) (2023-05-15)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.29](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.28...docs@1.9.29) (2023-05-04)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.28](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.27...docs@1.9.28) (2023-05-04)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.27](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.26...docs@1.9.27) (2023-04-28)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.26](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.25...docs@1.9.26) (2023-04-25)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.25](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.24...docs@1.9.25) (2023-04-24)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.24](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.23...docs@1.9.24) (2023-04-24)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.23](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.22...docs@1.9.23) (2023-04-23)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.22](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.21...docs@1.9.22) (2023-04-20)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.21](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.20...docs@1.9.21) (2023-04-20)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.20](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.19...docs@1.9.20) (2023-04-14)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.19](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.18...docs@1.9.19) (2023-04-13)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.18](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.17...docs@1.9.18) (2023-04-07)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.17](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.16...docs@1.9.17) (2023-03-31)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.16](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.15...docs@1.9.16) (2023-03-27)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.15](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.14...docs@1.9.15) (2023-03-17)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.14](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.13...docs@1.9.14) (2023-03-15)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.13](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.12...docs@1.9.13) (2023-03-15)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.12](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.11...docs@1.9.12) (2023-03-15)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.11](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.10...docs@1.9.11) (2023-03-14)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.10](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.9...docs@1.9.10) (2023-03-14)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.9](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.8...docs@1.9.9) (2023-03-13)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.8](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.7...docs@1.9.8) (2023-03-13)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.7](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.6...docs@1.9.7) (2023-03-09)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.6](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.5...docs@1.9.6) (2023-03-08)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.5](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.4...docs@1.9.5) (2023-03-07)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.4](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.3...docs@1.9.4) (2023-03-03)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.3](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.2...docs@1.9.3) (2023-02-28)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.2](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.1...docs@1.9.2) (2023-02-28)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.9.1](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.9.0...docs@1.9.1) (2023-02-27)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+# [1.9.0](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.8.35...docs@1.9.0) (2023-02-27)
+
+
+### Features
+
+* leap account change and debug ([9006aac](https://github.com/cosmology-tech/cosmos-kit/commit/9006aac6c453262e9ac890c34616622b50dc5766))
+
+
+
+
+
+## [1.8.35](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.8.34...docs@1.8.35) (2023-02-24)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.8.34](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.8.33...docs@1.8.34) (2023-02-24)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
+## [1.8.33](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.8.32...docs@1.8.33) (2023-02-24)
+
+**Note:** Version bump only for package docs
+
+
+
+
+
 ## [1.8.32](https://github.com/cosmology-tech/cosmos-kit/compare/docs@1.8.31...docs@1.8.32) (2023-02-23)
 
 **Note:** Version bump only for package docs

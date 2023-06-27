@@ -1,7 +1,14 @@
 import { StdSignDoc } from '@cosmjs/amino';
 import { Algo, OfflineDirectSigner } from '@cosmjs/proto-signing';
-import { BroadcastMode } from '@cosmos-kit/core';
+import {
+  BroadcastMode,
+  ChainRecord,
+  ExtendedHttpEndpoint,
+  SignType,
+  SuggestToken,
+} from '@cosmos-kit/core';
 import { DirectSignDoc, SignOptions, WalletClient } from '@cosmos-kit/core';
+import { chainRegistryChainToKeplr } from '@chain-registry/keplr';
 
 import { Leap } from './types';
 
@@ -16,22 +23,69 @@ export class LeapClient implements WalletClient {
     await this.client.enable(chainIds);
   }
 
+  async suggestToken({ chainId, tokens, type }: SuggestToken) {
+    if (type === 'cw20') {
+      for (const { contractAddress } of tokens) {
+        await this.client.suggestToken(chainId, contractAddress);
+      }
+    }
+  }
+
+  async addChain(chainInfo: ChainRecord) {
+    const suggestChain = chainRegistryChainToKeplr(
+      chainInfo.chain,
+      chainInfo.assetList ? [chainInfo.assetList] : []
+    );
+
+    if (chainInfo.preferredEndpoints?.rest?.[0]) {
+      (suggestChain.rest as
+        | string
+        | ExtendedHttpEndpoint) = chainInfo.preferredEndpoints?.rest?.[0];
+    }
+
+    if (chainInfo.preferredEndpoints?.rpc?.[0]) {
+      (suggestChain.rpc as
+        | string
+        | ExtendedHttpEndpoint) = chainInfo.preferredEndpoints?.rpc?.[0];
+    }
+
+    await this.client.experimentalSuggestChain(suggestChain);
+  }
+
   async disconnect() {
     await this.client.disconnect();
+  }
+
+  async getSimpleAccount(chainId: string) {
+    const { address, username } = await this.getAccount(chainId);
+    return {
+      namespace: 'cosmos',
+      chainId,
+      address,
+      username,
+    };
   }
 
   async getAccount(chainId: string) {
     const key = await this.client.getKey(chainId);
     return {
-      name: key.name,
+      username: key.name,
       address: key.bech32Address,
       algo: key.algo as Algo,
       pubkey: key.pubKey,
     };
   }
 
-  getOfflineSigner(chainId: string) {
-    return this.client.getOfflineSignerAuto(chainId);
+  getOfflineSigner(chainId: string, preferredSignType?: SignType) {
+    switch (preferredSignType) {
+      case 'amino':
+        return this.getOfflineSignerAmino(chainId);
+      case 'direct':
+        return this.getOfflineSignerDirect(chainId);
+      default:
+        return this.getOfflineSignerAmino(chainId);
+    }
+    // return this.client.getOfflineSignerAuto(chainId);
   }
 
   getOfflineSignerAmino(chainId: string) {

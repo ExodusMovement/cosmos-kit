@@ -1,16 +1,22 @@
 import { Chain } from '@chain-registry/types';
-import { SigningCosmWasmClientOptions } from '@cosmjs/cosmwasm-stargate';
-import { SigningStargateClientOptions } from '@cosmjs/stargate';
+import {
+  HttpEndpoint,
+  SigningCosmWasmClientOptions,
+} from '@cosmjs/cosmwasm-stargate';
+import {
+  SigningStargateClientOptions,
+  StargateClientOptions,
+} from '@cosmjs/stargate';
 
-import { WalletRepo } from '../repository';
 import { ChainName } from './chain';
-import { Dispatch, StateActions } from './common';
+import { Dispatch, SignType, StateActions } from './common';
 import { WalletName } from './wallet';
 
 export interface SignerOptions {
-  stargate?: (chain: Chain) => SigningStargateClientOptions | undefined;
+  stargate?: (chain: Chain) => StargateClientOptions | undefined;
   signingStargate?: (chain: Chain) => SigningStargateClientOptions | undefined;
   signingCosmwasm?: (chain: Chain) => SigningCosmWasmClientOptions | undefined;
+  preferredSignType?: (chain: Chain) => SignType | undefined; // using `amino` if undefined
 }
 
 export interface ViewOptions {
@@ -22,24 +28,40 @@ export interface ViewOptions {
 
 export interface StorageOptions {
   disabled?: boolean;
-  duration?: number; // ms
+  /**
+   * Duration in ms.
+   */
+  duration?: number;
   clearOnTabClose?: boolean;
 }
 
 export interface SessionOptions {
-  duration: number; // ms
+  /**
+   * Duration in ms.
+   */
+  duration: number;
   callback?: () => void;
 }
 
-export interface Endpoints {
-  rpc?: string[];
-  rest?: string[];
+export interface ExtendedHttpEndpoint extends HttpEndpoint {
+  isLazy?: boolean;
 }
 
-export type EndpointOptions = Record<ChainName, Endpoints>;
+export interface Endpoints {
+  rpc?: (string | ExtendedHttpEndpoint)[];
+  rest?: (string | ExtendedHttpEndpoint)[];
+  isLazy?: boolean;
+}
+
+export interface EndpointOptions {
+  isLazy?: boolean;
+  endpoints?: Record<ChainName, Endpoints>;
+}
 
 export interface ManagerActions<T> extends StateActions<T> {
   walletName?: Dispatch<WalletName | undefined>;
   chainName?: Dispatch<ChainName | undefined>;
   viewOpen?: Dispatch<boolean>;
 }
+
+export type EventName = 'refresh_connection';

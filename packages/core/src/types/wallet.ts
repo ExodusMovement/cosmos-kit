@@ -1,20 +1,20 @@
 import {
+  AccountData,
   AminoSignResponse,
   OfflineAminoSigner,
+  StdSignature,
   StdSignDoc,
 } from '@cosmjs/amino';
 import {
-  Algo,
   DirectSignResponse,
   OfflineDirectSigner,
   OfflineSigner,
 } from '@cosmjs/proto-signing';
 import { SignClientTypes } from '@walletconnect/types';
-import { IconType } from 'react-icons';
 
 import { ChainWalletBase, MainWalletBase } from '../bases';
 import { ChainName, ChainRecord } from './chain';
-import { AppEnv, Mutable } from './common';
+import { DappEnv, Mutable, OS, SignType } from './common';
 
 export interface Key {
   readonly name: string;
@@ -23,6 +23,7 @@ export interface Key {
   readonly address: Uint8Array;
   readonly bech32Address: string;
   readonly isNanoLedger: boolean;
+  readonly isSmartContract?: boolean;
 }
 
 export interface SimpleAccount {
@@ -43,8 +44,8 @@ export enum WalletStatus {
   Error = 'Error',
 }
 
-export interface DownloadInfo extends AppEnv {
-  icon: IconType;
+export interface DownloadInfo extends DappEnv {
+  icon?: string | ((props: any) => JSX.Element); // i.e. { IconType } from 'react-icons';
   link: string;
 }
 
@@ -55,6 +56,18 @@ export interface Metadata {
   description: string;
   url: string;
   icons: string[];
+}
+
+export interface AppUrl {
+  native?:
+    | string
+    | {
+        android?: string;
+        ios?: string;
+        macos?: string;
+        windows?: string;
+      };
+  universal?: string;
 }
 
 export interface Wallet {
@@ -76,17 +89,28 @@ export interface Wallet {
   walletconnect?: {
     name: string;
     projectId: string;
+    encoding?: BufferEncoding; // encoding for bytes, default 'hex'
+    mobile?: AppUrl; // redirect link on mobile
+    formatNativeUrl?: (
+      appUrl: string,
+      wcUri: string,
+      os: OS | undefined,
+      name: string
+    ) => string;
+    formatUniversalUrl?: (
+      appUrl: string,
+      wcUri: string,
+      name: string
+    ) => string;
   };
 }
 
 export type Bech32Address = string;
 
-export interface WalletAccount {
-  address: Bech32Address;
-  pubkey?: Uint8Array;
-  algo?: Algo | undefined;
-  name?: string;
+export interface WalletAccount extends AccountData {
+  username?: string;
   isNanoLedger?: boolean;
+  isSmartContract?: boolean;
 }
 
 export interface SignOptions {
@@ -115,19 +139,45 @@ export declare enum BroadcastMode {
   Async = 'async',
 }
 
+export interface SuggestCW20Token {
+  contractAddress: string;
+  viewingKey?: string;
+  imageURL?: string;
+  coinGeckoId?: string;
+}
+
+export const SuggestTokenTypes = {
+  CW20: 'cw20',
+  ERC20: 'erc20',
+} as const;
+
+export type SuggestTokenType = typeof SuggestTokenTypes[keyof typeof SuggestTokenTypes];
+
+export interface SuggestToken {
+  chainId: string;
+  chainName: string;
+  type: SuggestTokenType;
+  tokens: SuggestCW20Token[];
+}
+
 export interface WalletClient {
-  getAccount: (chainId: string) => Promise<WalletAccount>;
-  getOfflineSigner: (chainId: string) => Promise<OfflineSigner> | OfflineSigner;
+  getSimpleAccount: (chainId: string) => Promise<SimpleAccount>;
 
   qrUrl?: Mutable<string>;
-  appUrl?: Mutable<string>;
+  appUrl?: Mutable<AppUrl>;
 
-  connect?: (chainIds: string | string[], isMobile: boolean) => Promise<void>; // called when chain wallet connect is called
+  connect?: (chainIds: string | string[]) => Promise<void>; // called when chain wallet connect is called
   disconnect?: () => Promise<void>; // called when wallet disconnect is called
   on?: (type: string, listener: EventListenerOrEventListenerObject) => void;
   off?: (type: string, listener: EventListenerOrEventListenerObject) => void;
   enable?: (chainIds: string | string[]) => Promise<void>;
+  suggestToken?: (data: SuggestToken) => Promise<void>;
   addChain?: (chainInfo: ChainRecord) => Promise<void>;
+  getAccount?: (chainId: string) => Promise<WalletAccount>;
+  getOfflineSigner?: (
+    chainId: string,
+    preferredSignType?: SignType // by default `amino`
+  ) => Promise<OfflineSigner> | OfflineSigner;
   getOfflineSignerAmino?: (chainId: string) => OfflineAminoSigner;
   getOfflineSignerDirect?: (chainId: string) => OfflineDirectSigner;
   signAmino?: (
@@ -142,6 +192,11 @@ export interface WalletClient {
     signDoc: DirectSignDoc,
     signOptions?: SignOptions
   ) => Promise<DirectSignResponse>;
+  signArbitrary?: (
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array
+  ) => Promise<StdSignature>;
   getEnigmaPubKey?: (chainId: string) => Promise<Uint8Array>;
   getEnigmaTxEncryptionKey?: (
     chainId: string,
@@ -181,5 +236,5 @@ export interface NameServiceRegistry {
 }
 
 export interface WalletConnectOptions {
-  signClient: SignClientTypes.Options;
+  signClient: { projectId: string } & SignClientTypes.Options;
 }

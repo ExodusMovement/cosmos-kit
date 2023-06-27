@@ -13,9 +13,9 @@ import {
   useColorMode,
   VStack,
 } from "@chakra-ui/react";
-import { WalletStatus } from "@cosmos-kit/core";
-import { useChain, useModalTheme } from "@cosmos-kit/react";
-import { useCallback, useState } from "react";
+import { useChain, useModalTheme, useWallet } from "@cosmos-kit/react";
+import React, { useEffect } from "react";
+import { useCallback } from "react";
 import { BsFillMoonStarsFill, BsFillSunFill } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { IoWalletOutline } from "react-icons/io5";
@@ -25,41 +25,50 @@ import { ChainWalletCard } from "../components";
 // const chainNames_1 = ["cosmoshub"];
 // const chainNames_2: string[] = ["cosmoshub"];
 
-// const chainNames_1 = ["osmosis", "cosmoshub"];
-// const chainNames_2 = ["stargaze", "chihuahua"];
+const chainNames_1 = ["osmosis", "cosmoshub"];
+const chainNames_2 = ["stargaze", "chihuahua"];
 
-const chainNames_1 = ["osmosis"];
-const chainNames_2 = ["cosmoshub"];
+// const chainNames_1 = ["coreum"];
+// const chainNames_2 = [];
 
 export default () => {
   const { colorMode, setColorMode } = useColorMode();
   const { username, connect, disconnect, wallet } = useChain(chainNames_1[0]);
   const { modalTheme, setModalTheme } = useModalTheme();
-  const [globalStatus, setGlobalStatus] = useState<WalletStatus>(
-    WalletStatus.Disconnected
-  );
+  const { status: globalStatus, mainWallet } = useWallet(); // status here is the global wallet status for all activated chains (chain is activated when call useChain)
+
+  useEffect(() => {
+    const fn = async () => {
+      await mainWallet?.connect();
+      console.log(
+        "%cindex.tsx line:42 mainWallet.walletStatus",
+        "color: #007acc;",
+        mainWallet?.walletStatus
+      );
+    };
+    fn();
+  }, []);
 
   const toggleTheme = useCallback(() => {
-    switch (colorMode) {
+    switch (modalTheme) {
       case "light":
-        setColorMode("dark");
+        // setColorMode("dark");
         setModalTheme("dark");
         break;
       case "dark":
-        setColorMode("light");
+        // setColorMode("light");
         setModalTheme("light");
         break;
       default:
-        throw new Error("Unknown colorMode");
+        throw new Error(`Unknown modalTheme: ${modalTheme}`);
     }
-  }, [setColorMode, setModalTheme, colorMode]);
+  }, [setColorMode, setModalTheme, colorMode, modalTheme]);
 
   const addressInModal = chainNames_1.map((chainName) => {
     return (
       <ChainWalletCard
         key={chainName}
         chainName={chainName}
-        setGlobalStatus={setGlobalStatus}
         type="address-in-modal"
       />
     );
@@ -70,7 +79,6 @@ export default () => {
       <ChainWalletCard
         key={chainName}
         chainName={chainName}
-        setGlobalStatus={setGlobalStatus}
         type="address-on-page"
       />
     );
@@ -112,7 +120,7 @@ export default () => {
             colorScheme="teal"
             onClick={async () => {
               await disconnect();
-              setGlobalStatus(WalletStatus.Disconnected);
+              // setGlobalStatus(WalletStatus.Disconnected);
             }}
           >
             Disconnect

@@ -1,16 +1,22 @@
-import { dummyLogger, Logger as TsLogger } from 'ts-log';
 import { LogLevel } from '../types';
 
 function wrap(logLevel: LogLevel, message?: any) {
-  if (typeof message === 'string') {
-    return [`${logLevel} - ${message}`];
-  } else {
-    return [`${logLevel} -`, message];
+  switch (logLevel) {
+    case 'ERROR':
+      return [`%c${logLevel} -`, 'color: Red;', message];
+    case 'WARN':
+      return [`%c${logLevel} -`, 'color: Orange;', message];
+    case 'INFO':
+      return [`%c${logLevel} -`, 'color: Blue;', message];
+    case 'DEBUG':
+      return [`%c${logLevel} -`, 'color: Purple;', message];
+    case 'TRACE':
+      return [`%c${logLevel} -`, 'color: Brown;', message];
   }
 }
 
-export class Logger implements TsLogger {
-  private readonly logger: TsLogger;
+export class Logger {
+  private readonly logger: Console;
   public readonly level: LogLevel;
   public readonly levelOrder: LogLevel[] = [
     'TRACE',
@@ -20,8 +26,8 @@ export class Logger implements TsLogger {
     'ERROR',
   ];
 
-  public constructor(logger: TsLogger = dummyLogger, level: LogLevel = 'INFO') {
-    this.logger = logger;
+  public constructor(level: LogLevel = 'INFO') {
+    this.logger = console;
     this.level = level;
   }
 

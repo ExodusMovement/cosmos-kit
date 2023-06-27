@@ -4,7 +4,6 @@ import {
   Callbacks,
   DownloadInfo,
   Mutable,
-  SessionOptions,
   State,
   Wallet,
   WalletClient,
@@ -21,10 +20,28 @@ export abstract class WalletBase extends StateBase {
   callbacks?: Callbacks;
   session?: Session;
   walletConnectOptions?: WalletConnectOptions;
+  isActive = false;
+  throwErrors = false;
 
   constructor(walletInfo: Wallet) {
     super();
     this._walletInfo = walletInfo;
+  }
+
+  get appUrl() {
+    return this.client?.appUrl;
+  }
+
+  get qrUrl() {
+    return this.client?.qrUrl;
+  }
+
+  activate() {
+    this.isActive = true;
+  }
+
+  inactivate() {
+    this.isActive = false;
   }
 
   get client() {
@@ -112,26 +129,32 @@ export abstract class WalletBase extends StateBase {
     this.callbacks = { ...this.callbacks, ...callbacks };
   }
 
-  disconnect = async (callbacks?: Callbacks, sync?: boolean) => {
+  disconnect = async (sync?: boolean) => {
     if (sync) {
       this.emitter?.emit('sync_disconnect', (this as any).chainName);
-      this.logger?.info('[WALLET EVENT] Emit `sync_disconnect`');
+      this.logger?.debug('[WALLET EVENT] Emit `sync_disconnect`');
     }
-    await (callbacks || this.callbacks)?.beforeDisconnect?.();
+    await this.callbacks?.beforeDisconnect?.();
     this.reset();
     window.localStorage.removeItem('cosmos-kit@1:core//current-wallet');
     await this.client?.disconnect?.();
-    await (callbacks || this.callbacks)?.afterDisconnect?.();
+    await this.callbacks?.afterDisconnect?.();
   };
 
   setClientNotExist() {
     this.setState(State.Error);
     this.setMessage(ClientNotExistError.message);
+    if (this.throwErrors) {
+      throw new Error(this.message);
+    }
   }
 
   setRejected() {
     this.setState(State.Error);
     this.setMessage(RejectedError.message);
+    if (this.throwErrors) {
+      throw new Error(this.message);
+    }
   }
 
   setError(e?: Error | string) {
@@ -140,20 +163,24 @@ export abstract class WalletBase extends StateBase {
     if (typeof e !== 'string' && e?.stack) {
       this.logger?.error(e.stack);
     }
+    if (this.throwErrors) {
+      throw new Error(this.message);
+    }
   }
 
-  connect = async (
-    sessionOptions?: SessionOptions,
-    callbacks?: Callbacks,
-    sync?: boolean
-  ) => {
-    await (callbacks || this.callbacks)?.beforeConnect?.();
+  connect = async (sync?: boolean) => {
+    await this.callbacks?.beforeConnect?.();
 
     if (this.isMobile && this.walletInfo.mobileDisabled) {
       this.setError(
         'This wallet is not supported on mobile, please use desktop browsers.'
       );
       return;
+    }
+
+    if (sync) {
+      this.emitter?.emit('sync_connect', (this as any).chainName);
+      this.logger?.debug('[WALLET EVENT] Emit `sync_connect`');
     }
 
     try {
@@ -166,34 +193,20 @@ export abstract class WalletBase extends StateBase {
             : void 0
         );
         this.emitter?.emit('broadcast_client', this.client);
-        this.logger?.info('[WALLET EVENT] Emit `broadcast_client`');
+        this.logger?.debug('[WALLET EVENT] Emit `broadcast_client`');
         if (!this.client) {
           this.setClientNotExist();
           return;
         }
       }
       await this.update();
-
-      if (sessionOptions?.duration) {
-        setTimeout(() => {
-          this.disconnect(callbacks);
-        }, sessionOptions?.duration);
-      }
     } catch (error) {
       this.setError(error as Error);
     }
-    await (callbacks || this.callbacks)?.afterConnect?.();
-
-    if (sync) {
-      this.emitter?.emit('sync_connect', (this as any).chainName);
-      this.logger?.info('[WALLET EVENT] Emit `sync_connect`');
-    }
+    await this.callbacks?.afterConnect?.();
   };
 
   abstract initClient(options?: any): void | Promise<void>;
 
-  abstract update(
-    sessionOptions?: SessionOptions,
-    callbacks?: Callbacks
-  ): void | Promise<void>;
+  abstract update(): void | Promise<void>;
 }

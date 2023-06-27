@@ -6,7 +6,7 @@ import { useContext, useMemo } from 'react';
 import { addSemanticTokens, noCssResetTheme } from '../theme';
 import React from 'react';
 
-export function WrapperWithOuterTheme({
+export function ChakraProviderWithOuterTheme({
   logger,
   children,
 }: {
@@ -16,8 +16,8 @@ export function WrapperWithOuterTheme({
   const outerTheme = useContext(ThemeContext);
   const theme = useMemo(() => addSemanticTokens(outerTheme), [outerTheme]);
 
-  logger?.debug('[WalletModal] ChakraProvider `theme`:', theme);
-  logger?.debug('[WalletModal] ChakraProvider `resetCSS`:', true);
+  // logger?.debug('[WalletModal] ChakraProvider `theme`:', theme);
+  // logger?.debug('[WalletModal] ChakraProvider `resetCSS`:', true);
 
   return (
     <ThemeProvider>
@@ -28,7 +28,7 @@ export function WrapperWithOuterTheme({
   );
 }
 
-export function WrapperWithProvidedTheme({
+export function ChakraProviderWithGivenTheme({
   theme,
   logger,
   children,
@@ -45,8 +45,8 @@ export function WrapperWithProvidedTheme({
     }
   }, [theme]);
 
-  logger?.debug('[WalletModal] ChakraProvider `theme`:', _theme);
-  logger?.debug('[WalletModal] ChakraProvider `resetCSS`:', false);
+  // logger?.debug('[WalletModal] ChakraProvider `theme`:', _theme);
+  // logger?.debug('[WalletModal] ChakraProvider `resetCSS`:', false);
 
   return (
     <ThemeProvider>

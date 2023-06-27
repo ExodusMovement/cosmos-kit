@@ -21,33 +21,43 @@ import {
   StdFee,
 } from '@cosmjs/stargate';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-import { ChainWalletBase } from '../bases';
+
+import { ChainWalletBase, MainWalletBase } from '../bases';
 import { NameService } from '../name-service';
 import { WalletRepo } from '../repository';
 import { ChainName, ChainRecord } from './chain';
-import { CosmosClientType, State } from './common';
-import { EndpointOptions, SignerOptions } from './manager';
 import {
+  CosmosClientType,
+  ModalTheme,
+  Mutable,
+  SignType,
+  State,
+} from './common';
+import {
+  EndpointOptions,
+  EventName,
+  ExtendedHttpEndpoint,
+  SignerOptions,
+} from './manager';
+import {
+  AppUrl,
   BroadcastMode,
   DirectSignDoc,
   NameServiceName,
   SignOptions,
+  SuggestToken,
   Wallet,
+  WalletAccount,
   WalletClient,
-  WalletName,
   WalletStatus,
 } from './wallet';
 
-export interface ChainContext {
-  walletRepo: WalletRepo;
+export interface ChainWalletContext {
   chainWallet: ChainWalletBase | undefined;
-  client: WalletClient | undefined;
-  clientStatus: State;
-  clientMessage: string | undefined;
 
   chain: Chain;
   assets: AssetList | undefined;
-  wallet: Wallet | undefined;
+  wallet: Wallet;
   logoUrl: string | undefined;
   address: string | undefined;
   username: string | undefined;
@@ -61,12 +71,10 @@ export interface ChainContext {
   isWalletNotExist: boolean;
   isWalletError: boolean;
 
-  openView: () => void;
-  closeView: () => void;
-  connect: (wallet?: WalletName) => Promise<void>;
+  connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  getRpcEndpoint: () => Promise<string>;
-  getRestEndpoint: () => Promise<string>;
+  getRpcEndpoint: (isLazy?: boolean) => Promise<string | ExtendedHttpEndpoint>;
+  getRestEndpoint: (isLazy?: boolean) => Promise<string | ExtendedHttpEndpoint>;
   getStargateClient: () => Promise<StargateClient>;
   getCosmWasmClient: () => Promise<CosmWasmClient>;
   getSigningStargateClient: () => Promise<SigningStargateClient>;
@@ -96,11 +104,16 @@ export interface ChainContext {
     type?: CosmosClientType
   ) => Promise<DeliverTxResponse>;
 
-  // methods exposed from wallet client
-  enable: (chainIds: string | string[]) => Promise<void>;
-  getOfflineSigner: (chainId: string) => Promise<OfflineSigner>;
-  getOfflineSignerAmino: (chainId: string) => OfflineAminoSigner;
-  getOfflineSignerDirect: (chainId: string) => OfflineDirectSigner;
+  // from wallet client
+  qrUrl: Mutable<string> | undefined;
+  appUrl: Mutable<AppUrl> | undefined;
+
+  enable: () => Promise<void>;
+  suggestToken: (data: SuggestToken) => Promise<void>;
+  getAccount: () => Promise<WalletAccount>;
+  getOfflineSigner: () => OfflineSigner;
+  getOfflineSignerAmino: () => OfflineAminoSigner;
+  getOfflineSignerDirect: () => OfflineDirectSigner;
   signAmino: (
     signer: string,
     signDoc: StdSignDoc,
@@ -114,9 +127,17 @@ export interface ChainContext {
   sendTx(tx: Uint8Array, mode: BroadcastMode): Promise<Uint8Array>;
 }
 
+export interface ChainContext extends ChainWalletContext {
+  wallet: Wallet | undefined;
+  walletRepo: WalletRepo;
+  openView: () => void;
+  closeView: () => void;
+}
+
 export interface ManagerContext {
   chainRecords: ChainRecord[];
   walletRepos: WalletRepo[];
+  mainWallets: MainWalletBase[];
   defaultNameService: NameServiceName;
   getChainRecord: (chainName: ChainName) => ChainRecord;
   getWalletRepo: (chainName: ChainName) => WalletRepo;
@@ -128,13 +149,25 @@ export interface ManagerContext {
   ) => void;
   getChainLogo: (chainName: ChainName) => string | undefined;
   getNameService: (chainName?: ChainName) => Promise<NameService>;
-  on: (event: string, handler: (params: any) => void) => void;
-  off: (event: string, handler: (params: any) => void) => void;
+  on: (event: EventName, handler: (params: any) => void) => void;
+  off: (event: EventName, handler: (params: any) => void) => void;
 }
-
-export type ModalTheme = 'light' | 'dark';
 
 export interface ModalThemeContext {
   modalTheme: ModalTheme;
   setModalTheme: (theme: ModalTheme) => void;
+}
+
+export interface WalletContext {
+  mainWallet: MainWalletBase | undefined;
+  chainWallets: ChainWalletBase[];
+  wallet: Wallet | undefined;
+  status: WalletStatus;
+  message: string | undefined;
+}
+
+export interface WalletClientContext {
+  client: WalletClient | undefined;
+  status: State;
+  message: string | undefined;
 }

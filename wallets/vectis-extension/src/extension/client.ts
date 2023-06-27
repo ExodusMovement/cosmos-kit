@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { StdSignDoc } from '@cosmjs/amino';
+import { chainRegistryChainToKeplr } from '@chain-registry/keplr';
+import { Algo, StdSignDoc, StdSignature } from '@cosmjs/amino';
 import {
+  BroadcastMode,
   ChainRecord,
   DirectSignDoc,
+  ExtendedHttpEndpoint,
   SignOptions,
+  SignType,
   WalletClient,
 } from '@cosmos-kit/core';
-import { SignDoc } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 
-import type { Vectis, VectisChainInfo } from './types';
+import type { Vectis } from './types';
 
 export class VectisClient implements WalletClient {
   readonly client: Vectis;
@@ -21,16 +24,44 @@ export class VectisClient implements WalletClient {
     await this.client.enable(chainIds);
   }
 
-  async getAccount(chainId: string) {
-    return await this.client.getKey(chainId);
+  async getSimpleAccount(chainId: string) {
+    const { address, name } = await this.client.getKey(chainId);
+    return {
+      namespace: 'cosmos',
+      chainId,
+      address,
+      username: name,
+    };
   }
 
-  async getOfflineSigner(chainId: string) {
-    const key = await this.getAccount(chainId);
-    if (key.isNanoLedger) {
-      return this.getOfflineSignerAmino(chainId);
+  async getAccount(chainId: string) {
+    const {
+      address,
+      algo,
+      pubkey,
+      name,
+      isNanoLedger,
+      isVectisAccount,
+    } = await this.client.getKey(chainId);
+    return {
+      username: name,
+      address,
+      algo: algo as Algo,
+      pubkey,
+      isNanoLedger,
+      isSmartContract: isVectisAccount,
+    };
+  }
+
+  async getOfflineSigner(chainId: string, preferredSignType?: SignType) {
+    switch (preferredSignType) {
+      case 'amino':
+        return this.getOfflineSignerAmino(chainId);
+      case 'direct':
+        return this.getOfflineSignerDirect(chainId);
+      default:
+        return this.getOfflineSignerAmino(chainId);
     }
-    return this.getOfflineSignerDirect(chainId);
   }
 
   getOfflineSignerAmino(chainId: string) {
@@ -41,41 +72,25 @@ export class VectisClient implements WalletClient {
     return this.client.getOfflineSignerDirect(chainId);
   }
 
-  async addChain({ chain, name, preferredEndpoints }: ChainRecord) {
-    const firstFeeToken = chain.fees?.fee_tokens[0];
-    const chainInfo: VectisChainInfo = {
-      chainId: chain.chain_id,
-      prettyName: chain.pretty_name,
-      chainName: chain.chain_name,
-      rpcUrl:
-        preferredEndpoints?.rpc?.[0] || chain.apis?.rpc?.[0].address || '',
-      restUrl:
-        preferredEndpoints?.rest?.[0] || chain.apis?.rest?.[0].address || '',
-      bech32Prefix: chain.bech32_prefix,
-      bip44: {
-        coinType: chain.slip44,
-      },
-      defaultFeeToken: firstFeeToken?.denom || '',
-      defaultGasPrice: firstFeeToken?.average_gas_price || 0,
-      testnet: chain.network_type === 'testnet',
-      stakingToken: chain.staking?.staking_tokens[0].denom || '',
-      feeTokens:
-        chain.fees?.fee_tokens.map((feeToken) => ({
-          denom: feeToken.denom,
-          coinDecimals: 6,
-        })) || [],
-      gasPriceStep: {
-        low: firstFeeToken?.low_gas_price || 0,
-        average: firstFeeToken?.average_gas_price || 0,
-        high: firstFeeToken?.low_gas_price || 0,
-      },
-    };
-    await this.client.suggestChains([chainInfo]);
-    const chains = await this.client.getSupportedChains();
-    const result = chains.some((chain) => chain.chainId === chainInfo.chainId);
-    if (!result) {
-      throw new Error(`Failed to add chain ${name}.`);
+  async addChain({ chain, name, assetList, preferredEndpoints }: ChainRecord) {
+    const chainInfo = chainRegistryChainToKeplr(
+      chain,
+      assetList ? [assetList] : []
+    );
+
+    if (preferredEndpoints?.rest?.[0]) {
+      (chainInfo.rest as
+        | string
+        | ExtendedHttpEndpoint) = preferredEndpoints?.rest?.[0];
     }
+
+    if (preferredEndpoints?.rpc?.[0]) {
+      (chainInfo.rpc as
+        | string
+        | ExtendedHttpEndpoint) = preferredEndpoints?.rpc?.[0];
+    }
+
+    await this.client.suggestChains([chainInfo]);
   }
 
   async signAmino(
@@ -93,6 +108,18 @@ export class VectisClient implements WalletClient {
     signDoc: DirectSignDoc,
     signOptions?: SignOptions
   ) {
-    return await this.client.signDirect(signer, signDoc as SignDoc);
+    return await this.client.signDirect(signer, signDoc);
+  }
+
+  async signArbitrary(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array
+  ): Promise<StdSignature> {
+    return await this.client.signArbitrary(chainId, signer, data);
+  }
+
+  async sendTx(chainId: string, tx: Uint8Array, mode: BroadcastMode) {
+    return await this.client.sendTx(chainId, tx, mode);
   }
 }

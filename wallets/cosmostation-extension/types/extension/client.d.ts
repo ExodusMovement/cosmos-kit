@@ -1,6 +1,6 @@
 import { StdSignDoc } from '@cosmjs/amino';
 import { OfflineDirectSigner } from '@cosmjs/proto-signing';
-import { BroadcastMode, ChainRecord, DirectSignDoc, SignOptions, WalletClient } from '@cosmos-kit/core';
+import { BroadcastMode, ChainRecord, DirectSignDoc, SignOptions, SignType, SuggestToken, WalletClient } from '@cosmos-kit/core';
 import { Cosmostation } from './types';
 export declare class CosmostationClient implements WalletClient {
     readonly client: Cosmostation;
@@ -8,15 +8,23 @@ export declare class CosmostationClient implements WalletClient {
     constructor(client: Cosmostation);
     get cosmos(): import("./types").Cosmos;
     get ikeplr(): import("@keplr-wallet/types").Keplr;
+    suggestToken({ chainName, tokens, type }: SuggestToken): Promise<void>;
+    getSimpleAccount(chainId: string): Promise<{
+        namespace: string;
+        chainId: string;
+        address: string;
+        username: string;
+    }>;
     getAccount(chainId: string): Promise<{
-        name: string;
+        username: string;
         address: string;
         pubkey: Uint8Array;
+        algo: import("@cosmjs/proto-signing").Algo;
     }>;
     disconnect(): Promise<void>;
     on(type: string, listener: EventListenerOrEventListenerObject): void;
     off(type: string, listener: EventListenerOrEventListenerObject): void;
-    getOfflineSigner(chainId: string): Promise<import("@keplr-wallet/types").OfflineAminoSigner | import("@keplr-wallet/types").OfflineDirectSigner>;
+    getOfflineSigner(chainId: string, preferredSignType?: SignType): OfflineDirectSigner | import("@keplr-wallet/types").OfflineAminoSigner;
     getOfflineSignerAmino(chainId: string): import("@keplr-wallet/types").OfflineAminoSigner;
     getOfflineSignerDirect(chainId: string): OfflineDirectSigner;
     addChain(chainInfo: ChainRecord): Promise<void>;

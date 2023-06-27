@@ -3,6 +3,298 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.7](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.6...@cosmos-kit/core@1.5.7) (2023-06-08)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.5.6](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.5...@cosmos-kit/core@1.5.6) (2023-06-08)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.5.5](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.4...@cosmos-kit/core@1.5.5) (2023-06-05)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.5.4](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.3...@cosmos-kit/core@1.5.4) (2023-06-02)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.5.3](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.2...@cosmos-kit/core@1.5.3) (2023-06-01)
+
+
+### Bug Fixes
+
+* add optional chaining to get rest endpoint ([50c0e36](https://github.com/cosmology-tech/cosmos-kit/commit/50c0e3675d9b65a0faf95299c95d2a514011eae0))
+
+
+
+
+
+## [1.5.2](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.1...@cosmos-kit/core@1.5.2) (2023-05-30)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.5.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.5.0...@cosmos-kit/core@1.5.1) (2023-05-16)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+# [1.5.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.4.1...@cosmos-kit/core@1.5.0) (2023-05-15)
+
+
+### Features
+
+* update vectis extension and support for smart contract key ([89462d2](https://github.com/cosmology-tech/cosmos-kit/commit/89462d2f876a9dd955fb1dcba82d747463d63737))
+* use post for endpoint validation ([7591979](https://github.com/cosmology-tech/cosmos-kit/commit/7591979f3bf391051be52473782ee467f63062c1))
+
+
+
+
+
+## [1.4.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.4.0...@cosmos-kit/core@1.4.1) (2023-05-04)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+# [1.4.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.8...@cosmos-kit/core@1.4.0) (2023-04-28)
+
+
+### Features
+
+* :sparkles: add suggest token hook type ([72a6211](https://github.com/cosmology-tech/cosmos-kit/commit/72a6211f81f76add230ba1662dff4c6093885f27))
+* :sparkles: add suggestToken prototype ([c17a249](https://github.com/cosmology-tech/cosmos-kit/commit/c17a249dcd2287b275e73e0007ad6906b9166bc2))
+* :sparkles: generate wallet type ([0449a5d](https://github.com/cosmology-tech/cosmos-kit/commit/0449a5d30fd96671d38c4a465d8af052fcdf1b02))
+* :sparkles: improve suggest token type ([bb83c28](https://github.com/cosmology-tech/cosmos-kit/commit/bb83c28a98c409dd2267f1ba0c49f6dc7724a6b3))
+* :sparkles: improve suggest token types ([dc06b79](https://github.com/cosmology-tech/cosmos-kit/commit/dc06b79d56a5153b2d5f955d919fffc8232fdcd4))
+
+
+
+
+
+## [1.3.8](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.7...@cosmos-kit/core@1.3.8) (2023-04-25)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.7](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.6...@cosmos-kit/core@1.3.7) (2023-04-24)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.6](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.5...@cosmos-kit/core@1.3.6) (2023-04-20)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.5](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.4...@cosmos-kit/core@1.3.5) (2023-04-20)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.4](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.3...@cosmos-kit/core@1.3.4) (2023-04-14)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.3](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.2...@cosmos-kit/core@1.3.3) (2023-04-07)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.2](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.1...@cosmos-kit/core@1.3.2) (2023-03-31)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.3.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.3.0...@cosmos-kit/core@1.3.1) (2023-03-27)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+# [1.3.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.11...@cosmos-kit/core@1.3.0) (2023-03-17)
+
+
+### Features
+
+* allow disabling endpoint validation ([fc8594a](https://github.com/cosmology-tech/cosmos-kit/commit/fc8594a6e687c3f8f0ad870e1f6d020856644336))
+
+
+
+
+
+## [1.1.11](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.10...@cosmos-kit/core@1.1.11) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.10](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.9...@cosmos-kit/core@1.1.10) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.9](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.8...@cosmos-kit/core@1.1.9) (2023-03-15)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.8](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.7...@cosmos-kit/core@1.1.8) (2023-03-14)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.7](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.6...@cosmos-kit/core@1.1.7) (2023-03-14)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.6](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.5...@cosmos-kit/core@1.1.6) (2023-03-13)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.5](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.4...@cosmos-kit/core@1.1.5) (2023-03-09)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.4](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.3...@cosmos-kit/core@1.1.4) (2023-03-03)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.3](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.2...@cosmos-kit/core@1.1.3) (2023-02-28)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.2](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.1...@cosmos-kit/core@1.1.2) (2023-02-28)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.1.1](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.1.0...@cosmos-kit/core@1.1.1) (2023-02-27)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+# [1.1.0](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.0.16...@cosmos-kit/core@1.1.0) (2023-02-27)
+
+
+### Features
+
+* leap account change and debug ([9006aac](https://github.com/cosmology-tech/cosmos-kit/commit/9006aac6c453262e9ac890c34616622b50dc5766))
+
+
+
+
+
+## [1.0.16](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.0.15...@cosmos-kit/core@1.0.16) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.0.15](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.0.14...@cosmos-kit/core@1.0.15) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
+## [1.0.14](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.0.13...@cosmos-kit/core@1.0.14) (2023-02-24)
+
+**Note:** Version bump only for package @cosmos-kit/core
+
+
+
+
+
 ## [1.0.13](https://github.com/cosmology-tech/cosmos-kit/compare/@cosmos-kit/core@1.0.12...@cosmos-kit/core@1.0.13) (2023-02-23)
 
 **Note:** Version bump only for package @cosmos-kit/core
